@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { getCurrentMembership } from "@/lib/households";
-import Dashboard from "./dashboard";
+import { SetupForm } from "./setup-form";
 
-export default async function Home() {
+export default async function SetupHouseholdPage() {
   const membership = await getCurrentMembership();
 
   if (!membership.userId) redirect("/login");
@@ -17,7 +17,7 @@ export default async function Home() {
       </main>
     );
   }
-  if (!membership.householdId) redirect("/setup-household");
+  if (membership.householdId) redirect("/");
 
-  return <Dashboard />;
+  return <SetupForm />;
 }
