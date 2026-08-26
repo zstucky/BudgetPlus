@@ -2,6 +2,7 @@
 
 import { SubmitEvent, useState } from "react";
 import { logout } from "@/app/auth/actions";
+import { addTransaction, resetTransactions } from "@/app/transactions/actions";
 
 type Expense = {
   id: string;
@@ -12,10 +13,12 @@ type Expense = {
 type DashboardProps = {
   householdId: string;
   weeklyBudget: number;
+  initialExpenses: Expense[]
 };
 
-export default function Dashboard({ householdId, weeklyBudget }: DashboardProps) {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+export default function Dashboard({ householdId, weeklyBudget, initialExpenses }: DashboardProps) {
+  console.log("DASHBOARD INITIAL EXPENSES:", initialExpenses);
+  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
@@ -27,29 +30,58 @@ export default function Dashboard({ householdId, weeklyBudget }: DashboardProps)
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
   };
 
-  function subtractExpense(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const expense = Number.parseFloat(amount);
+  async function subtractExpense(event: SubmitEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    if (!Number.isFinite(expense) || expense <= 0 || remaining <= 0) return;
+  const expense = Number.parseFloat(amount);
 
-    setExpenses((current) => [
-      {
-        id: `${Date.now()}-${Math.random()}`,
-        amount: Math.min(expense, remaining),
-        description: description.trim() || "Expense",
-      },
-      ...current,
-    ]);
-    setAmount("");
-    setDescription("");
+  if (!Number.isFinite(expense) || expense <= 0 || remaining <= 0) return;
+
+  const transactionAmount = Math.min(expense, remaining);
+  const transactionDescription = description.trim() || "Expense";
+
+  const result = await addTransaction(
+    transactionAmount,
+    transactionDescription,
+  );
+
+  if (result.error) {
+    console.error("Failed to add transaction:", result.error);
+    return;
   }
 
-  function resetBudget() {
-    setExpenses([]);
-    setAmount("");
-    setDescription("");
+  setExpenses((current) => [
+    {
+      id: `${Date.now()}-${Math.random()}`,
+      amount: transactionAmount,
+      description: transactionDescription,
+      created_at: new Date().toISOString(),
+    },
+    ...current,
+  ]);
+
+  setAmount("");
+  setDescription("");
+}
+
+async function resetBudget() {
+  const confirmed = window.confirm(
+    "Are you sure you want to clear all transactions for your household? This cannot be undone.",
+  );
+
+  if (!confirmed) return;
+
+  const result = await resetTransactions();
+
+  if (result.error) {
+    console.error("Failed to reset transactions:", result.error);
+    return;
   }
+
+  setExpenses([]);
+  setAmount("");
+  setDescription("");
+}
 
   return (
     <main className="budget-page">

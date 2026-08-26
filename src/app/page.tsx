@@ -67,6 +67,7 @@ export default async function Home() {
     <Dashboard
       householdId={membership.householdId}
       weeklyBudget={Number(household.weekly_budget)}
+      initialExpenses={transactions.data}
     />
   );
 }
