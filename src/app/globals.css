@@ -47,6 +47,22 @@ button, input { font: inherit; }
   letter-spacing: -.02em;
 }
 
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.delete-transaction-button {
+  border: none;
+  background: transparent;
+  color: #8b979e;
+  font-size: 28px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
 .balance-section { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 35px 0 27px; }
 .balance-label, .budget-note { margin: 0; color: var(--muted); font-size: .91rem; }
 .balance { margin: 5px 0 4px; font-size: clamp(2.8rem, 12vw, 4.15rem); font-weight: 700; letter-spacing: -.075em; line-height: 1; }
