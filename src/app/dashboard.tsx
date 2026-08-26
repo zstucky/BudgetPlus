@@ -3,22 +3,25 @@
 import { SubmitEvent, useState } from "react";
 import { logout } from "@/app/auth/actions";
 
-const WEEKLY_BUDGET = 150;
-
 type Expense = {
   id: string;
   amount: number;
   description: string;
 };
 
-export default function Dashboard() {
+type DashboardProps = {
+  householdId: string;
+  weeklyBudget: number;
+};
+
+export default function Dashboard({ householdId, weeklyBudget }: DashboardProps) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
-  const remaining = Math.max(0, WEEKLY_BUDGET - spent);
-  const progress = Math.min(100, Math.max(0, (remaining / WEEKLY_BUDGET) * 100));
+  const remaining = Math.max(0, weeklyBudget - spent);
+  const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
   const progressColor = progress <= 20 ? "#ff6257" : progress <= 50 ? "#f4c542" : "#5ee6a8";
   const ringStyle = {
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
