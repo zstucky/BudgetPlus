@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitEvent, useState } from "react";
+import { SubmitEvent, useState, CSSProperties } from "react";
 import { logout } from "@/app/auth/actions";
 import { addTransaction, resetTransactions, deleteTransaction } from "@/app/transactions/actions";
 
@@ -24,7 +24,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
   const [description, setDescription] = useState("");
 
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
-  const remaining = Math.max(0, weeklyBudget - spent);
+  const remaining = weeklyBudget - spent;
   const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
   const progressColor = progress <= 20 ? "#ff6257" : progress <= 50 ? "#f4c542" : "#5ee6a8";
   const ringStyle = {
@@ -36,9 +36,9 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
 
   const expense = Number.parseFloat(amount);
 
-  if (!Number.isFinite(expense) || expense <= 0 || remaining <= 0) return;
+  if (!Number.isFinite(expense) || expense <= 0) return;
 
-  const transactionAmount = Math.min(expense, remaining);
+  const transactionAmount = expense;
   const transactionDescription = description.trim() || "Expense";
 
   const result = await addTransaction(
@@ -100,19 +100,33 @@ async function resetBudget() {
 }
 
 return (
-  <main className="budget-page">
+  <main
+    className="budget-page"
+    style={
+      {
+        "--accent-color": progressColor,
+      } as CSSProperties
+    }
+  >
     <section className="budget-card" aria-labelledby="page-title">
-      <div id="page-title" className="eyebrow">
+      <div
+        id="page-title"
+        className="eyebrow"
+        style={{ color: progressColor }}
+      >
         Weekly Budget
       </div>
 
       <div className="balance-section">
         <div>
-          <p className="balance-label">Available to spend</p>
-          <p className="balance" aria-live="polite">
-            <span>$</span>
-            {remaining.toFixed(2)}
-          </p>
+        <p
+          className="balance"
+          aria-live="polite"
+          style={{ color: progressColor }}
+        >
+          <span>$</span>
+          {remaining.toFixed(2)}
+        </p>
         </div>
 
         <div
@@ -177,7 +191,12 @@ return (
             />
           </div>
 
-          <button type="submit">Subtract</button>
+          <button
+            type="submit"
+            style={{ backgroundColor: progressColor }}
+          >
+            Subtract
+          </button>
         </div>
 
         <label htmlFor="description">
