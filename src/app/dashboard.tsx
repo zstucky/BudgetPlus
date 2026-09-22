@@ -143,36 +143,6 @@ return (
         </div>
       </div>
 
-      <div className="expense-summary">
-        <div className="spending-summary">
-          <span>Spent this week</span>
-          <strong>${spent.toFixed(2)}</strong>
-        </div>
-
-        {expenses.length > 0 && (
-          <ul className="expense-list" aria-label="Expenses added this week">
-            {expenses.map((expense) => (
-              <li key={expense.id}>
-                <span>{expense.description}</span>
-
-                <div className="transaction-actions">
-                  <strong>−${expense.amount.toFixed(2)}</strong>
-
-                  <button
-                    type="button"
-                    className="delete-transaction-button"
-                    onClick={() => removeExpense(expense.id)}
-                    aria-label={`Delete ${expense.description}`}
-                  >
-                    ×
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
       <form className="expense-form" onSubmit={subtractExpense}>
         <label htmlFor="expense">Amount</label>
 
@@ -213,6 +183,36 @@ return (
           onChange={(event) => setDescription(event.target.value)}
         />
       </form>
+
+            <div className="expense-summary">
+        <div className="spending-summary">
+          <span>Spent this week</span>
+          <strong>${spent.toFixed(2)}</strong>
+        </div>
+
+        {expenses.length > 0 && (
+          <ul className="expense-list" aria-label="Expenses added this week">
+            {expenses.map((expense) => (
+              <li key={expense.id}>
+                <span>{expense.description}</span>
+
+                <div className="transaction-actions">
+                  <strong>−${expense.amount.toFixed(2)}</strong>
+
+                  <button
+                    type="button"
+                    className="delete-transaction-button"
+                    onClick={() => removeExpense(expense.id)}
+                    aria-label={`Delete ${expense.description}`}
+                  >
+                    ×
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <button
         className="reset-button"

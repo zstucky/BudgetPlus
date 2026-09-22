@@ -81,7 +81,7 @@ button, input { font: inherit; }
 .progress-center span { color: var(--muted); font-size: .75rem; }
 
 .expense-summary { margin-bottom: 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #10151a; }
-.spending-summary { display: flex; justify-content: space-between; align-items: center; padding: 16px 17px; color: var(--muted); font-size: .91rem; }
+.spending-summary { display: flex; justify-content: space-between; align-items: center; padding: 16px 17px; color: var(--ink); font-size: 1rem; }
 .spending-summary strong { color: var(--ink); font-size: 1rem; }
 .expense-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .expense-list li { display: flex; align-items: center; justify-content: space-between; padding: 13px 17px; color: var(--muted); font-size: .88rem; }
@@ -91,7 +91,7 @@ button, input { font: inherit; }
 .expense-form label { display: block; margin-bottom: 9px; font-size: .92rem; font-weight: 700; }
 .input-row + label { margin-top: 18px; }
 .optional { color: var(--muted); font-size: .82rem; font-weight: 400; }
-.description-input { display: block; width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #343d47; border-radius: 12px; outline: 0; color: var(--ink); background: #0f1419; }
+.description-input { display: block; width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #343d47; border-radius: 12px; margin-bottom: 32px; outline: 0; color: var(--ink); background: #0f1419; }
 .description-input::placeholder { color: #6e7b75; }
 .description-input:focus { border-color: var(--pine); box-shadow: 0 0 0 3px rgba(94, 230, 168, .14); }
 .input-row { display: flex; gap: 10px; }
@@ -102,7 +102,7 @@ button, input { font: inherit; }
 .input-row button { min-height: 48px; padding: 0 21px; border: 0; border-radius: 12px; color: #092015; background: var(--pine); font-weight: 800; cursor: pointer; transition: background .2s, transform .2s; }
 .input-row button:hover { background: var(--pine-dark); transform: translateY(-1px); }
 
-.reset-button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0; margin-top: 17px; border: 0; color: var(--muted); background: transparent; font-size: .86rem; font-weight: 700; cursor: pointer; }
+.reset-button { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0; margin-top: -6px; border: 0; color: var(--muted); background: transparent; font-size: .86rem; font-weight: 700; cursor: pointer; }
 .reset-button:hover { color: var(--pine-dark); }
 .reset-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .household-button {
