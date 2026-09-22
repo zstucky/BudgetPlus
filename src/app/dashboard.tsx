@@ -3,6 +3,7 @@
 import { SubmitEvent, useState, CSSProperties } from "react";
 import { logout } from "@/app/auth/actions";
 import { addTransaction, resetTransactions, deleteTransaction } from "@/app/transactions/actions";
+import Link from "next/link";
 
 type Expense = {
   id: string;
@@ -226,11 +227,16 @@ return (
         Reset weekly budget
       </button>
 
-      <form action={logout}>
-        <button className="logout-button" type="submit">
-          Log out
-        </button>
-      </form>
+      <div className="account-actions">
+        <form action={logout}>
+          <button className="logout-button" type="submit">
+            Log out
+          </button>
+        </form>
+        <Link className="household-button" href="/household">
+          Edit household
+        </Link>
+      </div>
     </section>
   </main>
 );
