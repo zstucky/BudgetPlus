@@ -159,7 +159,7 @@ button, input { font: inherit; }
   .budget-page {
     align-items: start;
     min-height: 100dvh;
-    padding: 80px 16px 16px;
+    padding: 65px 16px 16px;
   }
 
   .budget-card {
