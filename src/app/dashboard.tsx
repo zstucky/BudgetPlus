@@ -23,6 +23,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
   const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
 
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
   const remaining = weeklyBudget - spent;
@@ -34,38 +35,34 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
 
   async function subtractExpense(event: SubmitEvent<HTMLFormElement>) {
   event.preventDefault();
-
   const expense = Number.parseFloat(amount);
-
   if (!Number.isFinite(expense) || expense <= 0) return;
-
   const transactionAmount = expense;
   const transactionDescription = description.trim() || "Expense";
-
-  const result = await addTransaction(
-    transactionAmount,
-    transactionDescription,
-  );
-
-  if (result.error) {
-    console.error("Failed to add transaction:", result.error);
-    return;
+  setIsAdding(true);
+  try {
+    const result = await addTransaction(
+      transactionAmount,
+      transactionDescription,
+    );
+    if (result.error) {
+      console.error("Failed to add transaction:", result.error);
+      return;
+    }
+    const transaction = result.transaction;
+    if (!transaction) {
+      console.error("Transaction was created but no data was returned.");
+      return;
+    }
+    setExpenses((current) => [
+      transaction,
+      ...current,
+    ]);
+    setAmount("");
+    setDescription("");
+  } finally {
+    setIsAdding(false);
   }
-
-  const transaction = result.transaction;
-
-  if (!transaction) {
-    console.error("Transaction was created but no data was returned.");
-    return;
-  }
-
-  setExpenses((current) => [
-    transaction,
-    ...current,
-  ]);
-
-  setAmount("");
-  setDescription("");
 }
 
 async function removeExpense(transactionId: string) {
@@ -164,9 +161,10 @@ return (
 
           <button
             type="submit"
+            disabled={isAdding}
             style={{ backgroundColor: progressColor }}
           >
-            Subtract
+            {isAdding ? "Saving..." : "Subtract"}
           </button>
         </div>
 
