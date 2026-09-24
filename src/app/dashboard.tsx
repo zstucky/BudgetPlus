@@ -4,6 +4,7 @@ import { SubmitEvent, useState, CSSProperties } from "react";
 import { logout } from "@/app/auth/actions";
 import { addTransaction, resetTransactions, deleteTransaction } from "@/app/transactions/actions";
 import Link from "next/link";
+import BottomNav from "./bottom-nav";
 
 type Expense = {
   id: string;
@@ -105,6 +106,7 @@ return (
       } as CSSProperties
     }
   >
+    <BottomNav />
     <section className="budget-card" aria-labelledby="page-title">
       <div id="page-title" className="eyebrow">
         Weekly Budget
