@@ -135,7 +135,7 @@ button, input { font: inherit; }
 
 /* Weekly budget dashboard */
 .budget-page {
-  --sun: #ffd21c;
+  --sun: var(--accent-color);
   --glass-line: rgba(220, 235, 227, .28);
   min-height: 100vh;
   min-height: 100dvh;
@@ -143,8 +143,8 @@ button, input { font: inherit; }
   place-items: center;
   padding: 38px 18px;
   background:
-    radial-gradient(ellipse at -3% 26%, rgba(235, 196, 0, .40), transparent 17rem),
-    radial-gradient(ellipse at 103% 43%, rgba(231, 195, 0, .30), transparent 19rem),
+    radial-gradient(ellipse at -3% 26%, color-mix(in srgb, var(--accent-color) 40%, transparent), transparent 17rem),
+    radial-gradient(ellipse at 103% 43%, color-mix(in srgb, var(--accent-color) 30%, transparent), transparent 19rem),
     radial-gradient(ellipse at 43% 66%, rgba(21, 64, 92, .34), transparent 23rem),
     linear-gradient(145deg, #071015, #0c1519 58%, #061014);
 }
@@ -160,20 +160,22 @@ button, input { font: inherit; }
 .eyebrow { color: var(--sun); font-size: clamp(2.25rem, 10vw, 2.8rem); line-height: 1.05; letter-spacing: -.045em; text-shadow: 0 0 25px rgba(255,210,28,.16); }
 .balance-section { min-height: 0; padding: 25px 8px 28px; }
 .balance { color: #fffdf5; font-size: clamp(3rem, 13vw, 3.8rem); letter-spacing: -.075em; text-shadow: 0 0 24px rgba(255,232,142,.12); }
-.progress-ring { width: 148px; height: 148px; padding: 10px; box-shadow: 0 0 34px rgba(255,210,28,.12); }
+.progress-ring { width: 148px; height: 148px; padding: 10px; margin-bottom: 12px; box-shadow: 0 0 34px rgba(255,210,28,.12); }
 .progress-center { background: #0b151a; }
 .progress-center strong { font-size: 1.75rem; }
 .progress-center span { font-size: .88rem; }
 .expense-form, .expense-summary {
   border: 1px solid var(--glass-line);
   border-radius: 20px;
-  background: linear-gradient(145deg, rgba(223,239,230,.13), rgba(17,29,38,.68) 53%, rgba(244,239,172,.09));
+  background: linear-gradient(145deg, rgba(223,239,230,.13), rgba(17,29,38,.68) 53%, color-mix(in srgb, var(--accent-color) 9%, transparent));
   box-shadow: inset 0 1px rgba(255,255,255,.15), 0 10px 35px rgba(0,0,0,.15);
   backdrop-filter: blur(18px);
 }
 .expense-form { padding: 18px 16px; margin-bottom: 15px; }
 .expense-form label { margin: 0 4px 12px; font-size: 1.08rem; }
 .input-row { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.expense-form .input-row { gap: 3px; }
+.expense-form .input-row button { margin-top: 12px; }
 .amount-input, .description-input {
   width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid rgba(224,238,234,.38);
   border-radius: 13px; background: rgba(7,16,22,.37); color: var(--ink);
@@ -183,8 +185,8 @@ button, input { font: inherit; }
 .description-input { margin: 0; font-size: 1rem; }
 .description-input::placeholder, .amount-input input::placeholder { color: #829099; }
 .amount-input:focus-within, .description-input:focus { border-color: rgba(255,220,61,.74); box-shadow: 0 0 0 3px rgba(255,210,28,.12); }
-.input-row button { min-height: 48px; border: 1px solid rgba(255,255,255,.48); border-radius: 13px; color: #101614; background: linear-gradient(100deg, #ffdb26, #ffc900); font-size: 1.06rem; box-shadow: 0 8px 24px rgba(255,207,0,.15); }
-.input-row button:hover { background: #ffe04a; }
+.input-row button { min-height: 48px; border: 1px solid color-mix(in srgb, var(--accent-color) 58%, white); border-radius: 13px; color: #101614; background: linear-gradient(100deg, color-mix(in srgb, var(--accent-color) 82%, white), var(--accent-color)); font-size: 1.06rem; box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-color) 18%, transparent); }
+.input-row button:hover { background: linear-gradient(100deg, color-mix(in srgb, var(--accent-color) 72%, white), color-mix(in srgb, var(--accent-color) 90%, white)); }
 .input-row button:disabled { cursor: wait; opacity: .7; }
 .expense-summary { margin-bottom: 18px; padding: 0 10px 10px; overflow: hidden; }
 .spending-summary { padding: 14px 10px 10px; font-size: 1.08rem; }
@@ -194,7 +196,7 @@ button, input { font: inherit; }
 .expense-list strong { color: #ff7774; font-size: 1rem; }
 .delete-transaction-button { font-size: 29px; }
 .reset-button { margin: 0 0 4px 4px; }
-.account-actions { margin-left: 4px; }
+.account-actions { margin: -10px 0 0 4px; }
 
 .auth-page { display: grid; min-height: 100vh; place-items: center; padding: 24px 16px; background: radial-gradient(circle at 50% -15%, #1d342c 0, transparent 31rem), #0b0e12; }
 .auth-card { width: min(100%, 420px); padding: 34px 28px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: 0 18px 50px rgba(0, 0, 0, .25); }
