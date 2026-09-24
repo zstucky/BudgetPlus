@@ -1,8 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
 export const metadata: Metadata = {
   title: "Budget+",
   description: "A simple weekly spending tracker.",
+  appleWebApp: {
+    capable: true,
+    title: "Budget+",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {
