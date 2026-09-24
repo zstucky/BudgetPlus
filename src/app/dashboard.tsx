@@ -19,7 +19,6 @@ type DashboardProps = {
 };
 
 export default function Dashboard({ householdId, weeklyBudget, initialExpenses }: DashboardProps) {
-  console.log("DASHBOARD INITIAL EXPENSES:", initialExpenses);
   const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -28,7 +27,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
   const remaining = weeklyBudget - spent;
   const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
-  const progressColor = progress <= 20 ? "#ff6257" : progress <= 50 ? "#f4c542" : "#5ee6a8";
+  const progressColor = progress <= 20 ? "#ff766f" : progress <= 50 ? "#ffd52a" : "#ffd21c";
   const ringStyle = {
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
   };
@@ -107,11 +106,7 @@ return (
     }
   >
     <section className="budget-card" aria-labelledby="page-title">
-      <div
-        id="page-title"
-        className="eyebrow"
-        style={{ color: progressColor }}
-      >
+      <div id="page-title" className="eyebrow">
         Weekly Budget
       </div>
 
@@ -120,7 +115,6 @@ return (
         <p
           className="balance"
           aria-live="polite"
-          style={{ color: progressColor }}
         >
           <span>$</span>
           {remaining.toFixed(2)}
@@ -142,7 +136,6 @@ return (
 
       <form className="expense-form" onSubmit={subtractExpense}>
         <label htmlFor="expense">Purchase</label>
-
         <div className="input-row">
           <div className="amount-input">
             <span aria-hidden="true">$</span>
@@ -158,7 +151,6 @@ return (
               onChange={(event) => setAmount(event.target.value)}
             />
           </div>
-
           <input
             id="description"
             className="description-input"
@@ -171,16 +163,13 @@ return (
           <button
             type="submit"
             disabled={isAdding}
-            style={{ backgroundColor: progressColor }}
           >
             {isAdding ? "Saving..." : "Subtract"}
           </button>
         </div>
-
-
       </form>
 
-            <div className="expense-summary">
+      <div className="expense-summary">
         <div className="spending-summary">
           <span>Spent this week</span>
           <strong>${spent.toFixed(2)}</strong>
@@ -210,16 +199,7 @@ return (
         )}
       </div>
 
-      <button
-        className="reset-button"
-        type="button"
-        onClick={resetBudget}
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 11a8.1 8.1 0 0 0-15.5-2.9L3 10m0-5v5h5" />
-          <path d="M4 13a8.1 8.1 0 0 0 15.5 2.9L21 14m0 5v-5h-5" />
-        </svg>
-
+      <button className="reset-button" type="button" onClick={resetBudget}>
         Reset weekly budget
       </button>
 
