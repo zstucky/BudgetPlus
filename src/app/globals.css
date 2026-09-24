@@ -22,6 +22,7 @@ button, input { font: inherit; }
 
 .budget-page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 32px 18px;
@@ -153,11 +154,45 @@ button, input { font: inherit; }
 .auth-switch a:hover { text-decoration: underline; }
 
 @media (max-width: 480px) {
-  .budget-page { align-items: start; padding: 16px; }
-  .budget-card { padding: 27px 22px; border-radius: 18px; }
-  .balance-section { flex-direction: column; align-items: flex-start; padding: 29px 0 24px; }
-  .progress-wrap { align-self: center; }
-  .progress-ring { width: 105px; height: 105px; padding: 8px; }
-  .input-row { flex-direction: column; }
-  .input-row button { padding: 0 15px; }
+  .budget-page {
+    align-items: start;
+    min-height: 100dvh;
+    padding:
+      calc(env(safe-area-inset-top) + 12px)
+      16px
+      calc(env(safe-area-inset-bottom) + 16px);
+  }
+
+  .budget-card {
+    padding: 27px 22px;
+    border-radius: 18px;
+  }
+
+  .eyebrow {
+    font-size: 2.2rem;
+  }
+
+  .balance-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 29px 0 24px;
+  }
+
+  .progress-wrap {
+    align-self: center;
+  }
+
+  .progress-ring {
+    width: 105px;
+    height: 105px;
+    padding: 8px;
+  }
+
+  .input-row {
+    flex-direction: column;
+  }
+
+  .input-row button {
+    padding: 0 15px;
+  }
 }
