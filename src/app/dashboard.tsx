@@ -141,7 +141,7 @@ return (
       </div>
 
       <form className="expense-form" onSubmit={subtractExpense}>
-        <label htmlFor="expense">Amount</label>
+        <label htmlFor="expense">Purchase</label>
 
         <div className="input-row">
           <div className="amount-input">
@@ -159,6 +159,15 @@ return (
             />
           </div>
 
+          <input
+            id="description"
+            className="description-input"
+            type="text"
+            placeholder="Description (Optional)"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+          />
+
           <button
             type="submit"
             disabled={isAdding}
@@ -168,18 +177,7 @@ return (
           </button>
         </div>
 
-        <label htmlFor="description">
-          Description <span className="optional">(optional)</span>
-        </label>
 
-        <input
-          id="description"
-          className="description-input"
-          type="text"
-          placeholder="Coffee, groceries, etc."
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
       </form>
 
             <div className="expense-summary">

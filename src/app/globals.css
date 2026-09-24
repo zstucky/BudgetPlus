@@ -94,10 +94,10 @@ button, input { font: inherit; }
 .expense-form label { display: block; margin-bottom: 9px; font-size: .92rem; font-weight: 700; }
 .input-row + label { margin-top: 18px; }
 .optional { color: var(--muted); font-size: .82rem; font-weight: 400; }
-.description-input { display: block; width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #343d47; border-radius: 12px; margin-bottom: 32px; outline: 0; color: var(--ink); background: #0f1419; }
+.description-input { display: block; width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid #343d47; border-radius: 12px; margin-bottom: 8px; outline: 0; color: var(--ink); background: #0f1419; }
 .description-input::placeholder { color: #6e7b75; }
 .description-input:focus { border-color: var(--pine); box-shadow: 0 0 0 3px rgba(94, 230, 168, .14); }
-.input-row { display: flex; gap: 10px; }
+.input-row { display: flex; gap: 10px; margin-bottom: 35px;}
 .amount-input { display: flex; flex: 1; align-items: center; gap: 3px; min-width: 0; min-height: 48px; padding: 0 14px; border: 1px solid #343d47; border-radius: 12px; background: #0f1419; color: var(--muted); }
 .amount-input:focus-within { border-color: var(--pine); box-shadow: 0 0 0 3px rgba(94, 230, 168, .14); }
 .amount-input input { width: 100%; min-width: 0; padding: 13px 0; border: 0; outline: 0; color: var(--ink); background: transparent; }
