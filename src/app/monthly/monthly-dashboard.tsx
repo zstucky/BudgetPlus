@@ -19,6 +19,7 @@ export default function MonthlyDashboard({ initialBills }: { initialBills: Recur
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const monthlyTotal = bills.reduce((total, bill) => total + bill.amount, 0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -66,6 +67,10 @@ export default function MonthlyDashboard({ initialBills }: { initialBills: Recur
         <div className="monthly-list-heading">
           <h2 id="bills-title">Recurring bills</h2>
           <span>{bills.length}</span>
+        </div>
+        <div className="monthly-total-row">
+          <span>Monthly expenses total</span>
+          <strong>${monthlyTotal.toFixed(2)}</strong>
         </div>
         {bills.length === 0 ? (
           <p className="monthly-empty">Your recurring expenses will appear here.</p>
