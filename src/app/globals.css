@@ -332,7 +332,7 @@ button, input { font: inherit; }
 .monthly-page {
   min-height: 100vh;
   min-height: 100dvh;
-  padding: max(100px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
+  padding: max(75px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
   background:
     radial-gradient(ellipse at 10% 8%, rgba(94, 230, 168, .09), transparent 22rem),
     radial-gradient(ellipse at 92% 36%, rgba(94, 230, 168, .12), transparent 24rem),
@@ -438,7 +438,7 @@ button, input { font: inherit; }
   display: block;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: max(100px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
+  padding: max(75px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
   background:
     radial-gradient(ellipse at 10% 8%, color-mix(in srgb, var(--accent-color) 9%, transparent), transparent 22rem),
     radial-gradient(ellipse at 92% 36%, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 24rem),
@@ -500,7 +500,7 @@ button, input { font: inherit; }
 }
 
 @media (max-width: 600px) {
-  .budget-page { padding: max(100px, env(safe-area-inset-top)) 15px max(120px, calc(env(safe-area-inset-bottom) + 108px)); }
+  .budget-page { padding: max(75px, env(safe-area-inset-top)) 15px max(120px, calc(env(safe-area-inset-bottom) + 108px)); }
   .budget-card { width: min(100%, 480px); padding: 0 0 24px; }
   .balance-section { flex-direction: row; align-items: center; gap: 8px; padding: 0; }
   .progress-ring { width: 100px; height: 100px; padding: 7px; }
