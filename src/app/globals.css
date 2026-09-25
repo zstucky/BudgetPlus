@@ -351,6 +351,30 @@ button, input { font: inherit; }
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
+.monthly-calendar {
+  padding: 14px 12px 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(220,235,227,.24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(223,239,230,.1), rgba(17,29,38,.55) 55%, rgba(94,230,168,.045));
+  box-shadow: inset 0 1px rgba(255,255,255,.12), 0 10px 35px rgba(0,0,0,.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.calendar-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 10px; }
+.calendar-heading h2 { margin: 0; color: #a8f5cc; font-size: 1.08rem; letter-spacing: -.02em; }
+.calendar-controls { display: flex; gap: 6px; }
+.calendar-controls button { display: grid; width: 31px; height: 31px; place-items: center; padding: 0 0 3px; border: 1px solid rgba(220,235,227,.24); border-radius: 10px; color: var(--ink); background: rgba(255,255,255,.055); font-size: 1.45rem; line-height: 1; cursor: pointer; }
+.calendar-controls button:hover { border-color: rgba(94,230,168,.5); background: rgba(94,230,168,.1); }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.calendar-weekday { padding: 3px 0 5px; color: var(--muted); font-size: .68rem; font-weight: 700; text-align: center; }
+.calendar-day { display: flex; min-width: 0; min-height: 49px; flex-direction: column; align-items: center; gap: 5px; padding: 5px 1px 4px; border: 1px solid transparent; border-radius: 10px; background: rgba(5,14,19,.19); }
+.calendar-day-empty { background: transparent; }
+.calendar-date { color: rgba(239,246,243,.82); font-size: .76rem; line-height: 1; }
+.calendar-day-due { border-color: rgba(255,115,105,.42); background: rgba(255,98,87,.12); box-shadow: inset 0 0 14px rgba(255,98,87,.06); }
+.calendar-day-due .calendar-date { color: #ffd0ca; font-weight: 700; }
+.calendar-due-amount { max-width: 100%; overflow: hidden; color: #ffaaa2; font-size: clamp(.48rem, 2.2vw, .68rem); font-weight: 800; line-height: 1; text-overflow: clip; white-space: nowrap; }
+.calendar-day-today { box-shadow: inset 0 0 0 1px rgba(239,250,246,.52); }
 .monthly-form { display: grid; gap: 8px; padding: 14px 15px; margin-top: 14px; }
 .monthly-form h2, .monthly-list-heading h2 { margin: 0; font-size: 1.1rem; letter-spacing: -.02em; }
 .monthly-form label { font-size: .8rem; font-weight: 700; }

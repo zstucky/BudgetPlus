@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { addRecurringBill, deleteRecurringBill } from "./actions";
+import MonthlyCalendar from "./monthly-calendar";
 
 export type RecurringBill = {
   id: string;
@@ -58,6 +59,8 @@ export default function MonthlyDashboard({ initialBills }: { initialBills: Recur
       <header className="monthly-heading">
         <h1 id="monthly-title">Monthly</h1>
       </header>
+
+      <MonthlyCalendar bills={bills} />
 
       <section className="monthly-bills" aria-labelledby="bills-title">
         <div className="monthly-list-heading">
