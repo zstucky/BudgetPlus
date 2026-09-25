@@ -28,7 +28,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
   const remaining = weeklyBudget - spent;
   const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
-  const progressColor = progress < 25 ? "#ff6257" : "#5ee6a8";
+  const progressColor = progress < 25 ? "#ff6257" : progress < 50 ? "#ffd21c" : "#5ee6a8";
   const ringStyle = {
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
   };
@@ -108,33 +108,33 @@ return (
   >
     <BottomNav />
     <section className="budget-card" aria-labelledby="page-title">
-      <div id="page-title" className="eyebrow">
-        Weekly Budget
-      </div>
+      <header className="monthly-heading weekly-heading">
+        <h1 id="page-title">Weekly</h1>
+      </header>
 
-      <div className="balance-section">
-        <div>
-        <p
-          className="balance"
-          aria-live="polite"
-        >
-          <span>$</span>
-          {remaining.toFixed(2)}
-        </p>
-        </div>
+      <section className="weekly-overview" aria-label="Weekly budget progress">
+        <div className="balance-section">
+          <div className="weekly-balance-copy">
+            <p className="weekly-balance-label">Remaining this week</p>
+            <p className="balance" aria-live="polite">
+              <span>$</span>
+              {remaining.toFixed(2)}
+            </p>
+          </div>
 
-        <div
-          className="progress-wrap"
-          aria-label={`${progress.toFixed(0)} percent of weekly budget remaining`}
-        >
-          <div className="progress-ring" style={ringStyle}>
-            <div className="progress-center">
-              <strong>{Math.round(progress)}%</strong>
-              <span>left</span>
+          <div
+            className="progress-wrap"
+            aria-label={`${progress.toFixed(0)} percent of weekly budget remaining`}
+          >
+            <div className="progress-ring" style={ringStyle}>
+              <div className="progress-center">
+                <strong>{Math.round(progress)}%</strong>
+                <span>left</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <form className="expense-form" onSubmit={subtractExpense}>
         <label htmlFor="expense">Purchase</label>

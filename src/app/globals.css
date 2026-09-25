@@ -432,3 +432,82 @@ button, input { font: inherit; }
   .monthly-form-fields { grid-template-columns: minmax(0, 1fr) 82px; }
   .monthly-form-fields > div:first-child { grid-column: 1 / -1; }
 }
+
+/* Weekly dashboard shares the Monthly page's stacked glass-card layout. */
+.budget-page {
+  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: max(42px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
+  background:
+    radial-gradient(ellipse at 10% 8%, color-mix(in srgb, var(--accent-color) 9%, transparent), transparent 22rem),
+    radial-gradient(ellipse at 92% 36%, color-mix(in srgb, var(--accent-color) 12%, transparent), transparent 24rem),
+    linear-gradient(145deg, #071015, #0c1519 58%, #061014);
+}
+.budget-card {
+  width: min(100%, 480px);
+  margin: 0 auto;
+  padding: 0 0 24px;
+}
+.weekly-heading { margin-bottom: 22px; }
+.weekly-heading h1 { color: var(--accent-color); text-shadow: 0 0 25px color-mix(in srgb, var(--accent-color) 16%, transparent); }
+.weekly-overview {
+  padding: 15px 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(220,235,227,.24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(223,239,230,.1), rgba(17,29,38,.55) 55%, rgba(94,230,168,.045));
+  box-shadow: inset 0 1px rgba(255,255,255,.12), 0 10px 35px rgba(0,0,0,.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.balance-section { min-height: 116px; padding: 0; }
+.weekly-balance-label { margin: 0 0 8px; color: var(--muted); font-size: .88rem; font-weight: 700; }
+.balance { margin: 0; color: #f3f7f5; font-size: clamp(2.4rem, 10vw, 3.4rem); }
+.progress-ring { width: 112px; height: 112px; padding: 8px; margin: 0; box-shadow: 0 0 28px rgba(94,230,168,.1); }
+.progress-center { background: rgba(8,19,24,.96); }
+.progress-center strong { font-size: 1.45rem; }
+.expense-form, .expense-summary {
+  border: 1px solid rgba(220,235,227,.24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(223,239,230,.105), rgba(17,29,38,.58) 53%, rgba(94,230,168,.045));
+  box-shadow: inset 0 1px rgba(255,255,255,.13), 0 10px 35px rgba(0,0,0,.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.expense-form { padding: 16px; margin: 0 0 14px; }
+.expense-form label { margin: 0 2px 9px; font-size: 1rem; }
+.expense-form .input-row { gap: 9px; margin: 0; }
+.amount-input, .description-input {
+  min-height: 47px;
+  border: 2px solid rgba(224,238,234,.3);
+  border-radius: 12px;
+  background: rgba(7,16,22,.42);
+}
+.expense-form .input-row button { margin: 0; border-radius: 12px; }
+.amount-input:focus-within, .description-input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 16%, transparent); }
+.expense-summary { padding: 14px; margin-bottom: 14px; }
+.spending-summary { padding: 1px 2px 13px; font-size: .9rem; }
+.spending-summary strong { font-size: 1.05rem; }
+.expense-list { border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
+.expense-list li { min-height: 56px; padding: 10px 13px; }
+.reset-button { margin: 0 0 3px 3px; }
+.account-actions { gap: 20px; margin: 0 0 0 3px; }
+
+@media (min-width: 560px) {
+  .expense-form .input-row { display: grid; grid-template-columns: minmax(90px, .8fr) minmax(110px, 1.2fr) auto; align-items: center; }
+  .expense-form .input-row button { padding: 0 16px; }
+}
+
+@media (max-width: 600px) {
+  .budget-page { padding: max(42px, env(safe-area-inset-top)) 15px max(120px, calc(env(safe-area-inset-bottom) + 108px)); }
+  .budget-card { width: min(100%, 480px); padding: 0 0 24px; }
+  .balance-section { flex-direction: row; align-items: center; gap: 8px; padding: 0; }
+  .progress-ring { width: 100px; height: 100px; padding: 7px; }
+}
+
+@media (max-width: 360px) {
+  .weekly-overview { padding: 13px 12px; }
+  .balance { font-size: 2.25rem; }
+  .progress-ring { width: 88px; height: 88px; padding: 6px; }
+}
