@@ -28,7 +28,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses }
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
   const remaining = weeklyBudget - spent;
   const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
-  const progressColor = progress < 25 ? "#ff6257" : progress > 50 ? "#5ee6a8" : "#ffd21c";
+  const progressColor = progress < 25 ? "#ff6257" : "#5ee6a8";
   const ringStyle = {
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
   };

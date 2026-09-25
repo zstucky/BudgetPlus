@@ -310,7 +310,7 @@ button, input { font: inherit; }
 }
 
 .bottom-nav-link:hover { color: #fff; background: rgba(255, 255, 255, .08); }
-.bottom-nav-link.active { color: #fff8c7; background: rgba(255, 210, 28, .14); box-shadow: inset 0 0 0 1px rgba(255, 221, 82, .18); }
+.bottom-nav-link.active { color: #d9ffea; background: rgba(94, 230, 168, .14); box-shadow: inset 0 0 0 1px rgba(94, 230, 168, .2); }
 .budget-page { padding-bottom: max(110px, calc(env(safe-area-inset-bottom) + 96px)); }
 
 .section-page {
@@ -329,6 +329,80 @@ button, input { font: inherit; }
 .section-placeholder h1 { margin: 0; color: var(--pine); font-size: clamp(2.25rem, 10vw, 2.8rem); letter-spacing: -.045em; }
 .section-placeholder p { margin: 14px 0 0; color: var(--muted); font-size: 1rem; }
 
+.monthly-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: max(42px, env(safe-area-inset-top)) 18px max(120px, calc(env(safe-area-inset-bottom) + 108px));
+  background:
+    radial-gradient(ellipse at 10% 8%, rgba(94, 230, 168, .09), transparent 22rem),
+    radial-gradient(ellipse at 92% 36%, rgba(94, 230, 168, .12), transparent 24rem),
+    linear-gradient(145deg, #071015, #0c1519 58%, #061014);
+}
+
+.monthly-content { width: min(100%, 480px); margin: 0 auto; }
+.monthly-heading { margin: 0 8px 22px; }
+.monthly-kicker { margin: 0 0 7px; color: var(--muted); font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.monthly-heading h1, .monthly-content > h1 { margin: 0; color: #a8f5cc; font-size: clamp(2.35rem, 10vw, 2.8rem); letter-spacing: -.045em; }
+.monthly-form, .monthly-bills {
+  border: 1px solid rgba(220, 235, 227, .24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(223,239,230,.105), rgba(17,29,38,.58) 53%, rgba(94,230,168,.045));
+  box-shadow: inset 0 1px rgba(255,255,255,.13), 0 10px 35px rgba(0,0,0,.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.monthly-form { display: grid; gap: 8px; padding: 14px 15px; margin-top: 14px; }
+.monthly-form h2, .monthly-list-heading h2 { margin: 0; font-size: 1.1rem; letter-spacing: -.02em; }
+.monthly-form label { font-size: .8rem; font-weight: 700; }
+.monthly-form-fields { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(100px, 1fr) 86px; gap: 9px; }
+.monthly-form-fields > div { display: grid; align-content: start; gap: 5px; min-width: 0; }
+.monthly-form-fields > div:first-child > input, .monthly-form select, .monthly-amount-input {
+  width: 100%; min-height: 47px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px;
+  color: var(--ink); background: rgba(7,16,22,.42);
+}
+.monthly-form-fields > div:first-child > input, .monthly-form select { padding: 0 13px; outline: 0; }
+.monthly-form-fields > div:first-child > input { font: inherit; }
+.monthly-form input::placeholder { color: #829099; }
+.monthly-form-fields > div:first-child > input:focus, .monthly-form select:focus, .monthly-amount-input:focus-within { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.monthly-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid rgba(224,238,234,.3);
+  color-scheme: dark;
+  font-weight: 600;
+  background-image: linear-gradient(45deg, transparent 50%, rgba(239,250,246,.86) 50%), linear-gradient(135deg, rgba(239,250,246,.86) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 19px, calc(100% - 12px) 19px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+.monthly-form-row { display: grid; grid-template-columns: 1fr 104px; gap: 12px; }
+.monthly-form-row > div { display: grid; gap: 9px; }
+.monthly-amount-input { display: flex; align-items: center; gap: 8px; padding: 0 13px; color: var(--muted); }
+.monthly-amount-input input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; color: var(--ink); background: transparent; }
+.monthly-form button[type="submit"] { min-height: 41px; margin-top: 5px; border: 1px solid rgba(164,245,204,.58); border-radius: 11px; color: #092015; background: linear-gradient(100deg, #a8f5cc, #5ee6a8); font-weight: 800; cursor: pointer; }
+.monthly-form button[type="submit"]:disabled { cursor: wait; opacity: .68; }
+.monthly-error { margin: 3px 0 0; color: #ffaaa4; font-size: .88rem; line-height: 1.45; }
+.monthly-bills { padding: 16px; }
+.monthly-list-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 12px; }
+.monthly-list-heading > span { display: grid; min-width: 27px; height: 27px; place-items: center; padding: 0 7px; border-radius: 99px; color: #d9ffea; background: rgba(94,230,168,.13); font-size: .8rem; font-weight: 800; }
+.monthly-bills ul { margin: 0; padding: 0; list-style: none; overflow: hidden; border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
+.monthly-bills li { display: grid; grid-template-columns: minmax(0, 1fr) auto 30px; align-items: center; gap: 10px; min-height: 65px; padding: 10px 11px 10px 14px; }
+.monthly-bills li + li { border-top: 1px solid rgba(220,235,227,.13); }
+.bill-details { display: grid; gap: 4px; min-width: 0; }
+.bill-details strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .96rem; }
+.bill-details span { color: var(--muted); font-size: .8rem; }
+.bill-amount { color: #f6f7eb; font-size: .94rem; white-space: nowrap; }
+.bill-delete { display: grid; width: 30px; height: 34px; place-items: center; border: 0; border-radius: 9px; color: rgba(235,245,240,.62); background: transparent; font-size: 24px; line-height: 1; cursor: pointer; }
+.bill-delete:hover { color: #ffaaa4; background: rgba(255,98,87,.1); }
+.bill-delete:disabled { cursor: wait; }
+.monthly-empty { margin: 0; padding: 19px 8px 8px; border-top: 1px solid rgba(220,235,227,.13); color: var(--muted); font-size: .9rem; text-align: center; }
+
 @media (max-width: 600px) {
   .budget-page { padding-bottom: max(110px, calc(env(safe-area-inset-bottom) + 96px)); }
+  .monthly-page { padding-right: 15px; padding-left: 15px; }
+}
+
+@media (max-width: 400px) {
+  .monthly-form-fields { grid-template-columns: minmax(0, 1fr) 82px; }
+  .monthly-form-fields > div:first-child { grid-column: 1 / -1; }
 }
