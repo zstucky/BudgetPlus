@@ -430,9 +430,12 @@ button, input { font: inherit; }
 .totals-kicker { margin: 0 0 5px; color: var(--muted); font-size: .82rem; }
 .totals-chart-card h2 { margin: 0; color: #f3f7f5; font-size: clamp(1.65rem, 7vw, 2.2rem); letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
 .totals-chart-label { padding: 6px 9px; border: 1px solid rgba(220,235,227,.16); border-radius: 99px; color: var(--muted); font-size: .72rem; }
-.totals-chart { position: relative; height: 160px; overflow: hidden; border: 1px solid rgba(220,235,227,.13); border-radius: 14px; background: linear-gradient(180deg, rgba(6,14,20,.33), rgba(6,14,20,.12)); }
-.totals-chart > p { display: grid; height: 100%; place-items: center; padding: 0 30px; margin: 0; color: var(--muted); font-size: .86rem; text-align: center; }
-.totals-chart svg { width: 100%; height: 100%; overflow: visible; }
+.totals-chart { position: relative; display: grid; height: 160px; grid-template-columns: 65px minmax(0,1fr); grid-template-rows: minmax(0,1fr); overflow: hidden; border: 1px solid rgba(220,235,227,.13); border-radius: 14px; background: linear-gradient(180deg, rgba(6,14,20,.33), rgba(6,14,20,.12)); }
+.totals-chart > p { display: grid; height: 100%; grid-column: 1 / -1; place-items: center; padding: 0 30px; margin: 0; color: var(--muted); font-size: .86rem; text-align: center; }
+.totals-chart-y-axis { display: flex; min-height: 0; flex-direction: column; justify-content: space-between; min-width: 0; padding: 23px 4px 17px 9px; border-right: 1px solid rgba(220,235,227,.18); color: var(--muted); font-size: clamp(.55rem, 2.2vw, .68rem); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.totals-chart-y-axis span { overflow: hidden; text-overflow: clip; }
+.totals-chart-plot { min-width: 0; min-height: 0; height: 100%; }
+.totals-chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .totals-chart-axis { stroke: rgba(220,235,227,.2); stroke-width: .6; stroke-dasharray: 1.5 2; }
 .totals-chart-line { fill: none; stroke: #a8f5cc; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 5px rgba(94,230,168,.35)); }
 .totals-chart-dot { fill: #a8f5cc; stroke: #14241f; stroke-width: .8; vector-effect: non-scaling-stroke; }
@@ -465,15 +468,31 @@ button, input { font: inherit; }
 .totals-note { margin: 9px 0 0; color: var(--muted); font-size: .74rem; text-align: center; }
 .totals-modal-backdrop { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(2,8,11,.72); backdrop-filter: blur(8px); }
 .totals-modal { position: relative; width: min(100%, 410px); padding: 23px 19px 19px; border: 1px solid rgba(220,235,227,.25); border-radius: 20px; background: linear-gradient(145deg, #17232a, #0d171c 75%); box-shadow: 0 20px 70px rgba(0,0,0,.45); }
+.totals-modal-delete-ready { padding-bottom: 14px; }
 .totals-modal h2 { margin: 0; color: #a8f5cc; font-size: 1.35rem; }
 .totals-modal > p { margin: 7px 0 14px; color: var(--muted); font-size: .88rem; }
 .totals-modal > p strong { color: var(--ink); }
 .totals-modal-close { position: absolute; top: 12px; right: 13px; width: 34px; height: 34px; border: 0; border-radius: 9px; color: var(--muted); background: rgba(255,255,255,.06); font-size: 1.5rem; cursor: pointer; }
 .totals-modal .totals-form { padding: 0; border: 0; background: transparent; }
+.totals-update-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 5px; }
+.totals-update-actions .totals-primary-button { margin: 0; }
+.totals-secondary-button { min-height: 45px; border: 1px solid rgba(220,235,227,.28); border-radius: 11px; color: var(--ink); background: rgba(255,255,255,.07); font-weight: 800; cursor: pointer; }
+.totals-secondary-button:hover { border-color: rgba(220,235,227,.48); background: rgba(255,255,255,.11); }
+.totals-secondary-button:disabled { cursor: wait; opacity: .65; }
+.totals-delete-area { padding-top: 3px; margin-top: 1px; border-top: 1px solid rgba(220,235,227,.13); }
+.totals-delete-trigger { min-height: 30px; padding: 0 5px; border: 0; color: #ffaaa4; background: transparent; font-size: .82rem; font-weight: 700; cursor: pointer; }
+.totals-delete-trigger:hover { color: #ffd0ca; }
+.totals-delete-area > p { margin: 2px 0 10px; color: #ffc0ba; font-size: .86rem; line-height: 1.4; }
+.totals-delete-area > p strong { color: #fff0ee; }
+.totals-delete-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.totals-delete-cancel, .totals-delete-confirm { min-height: 42px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+.totals-delete-cancel { border: 1px solid rgba(220,235,227,.25); color: var(--ink); background: rgba(255,255,255,.05); }
+.totals-delete-confirm { border: 1px solid rgba(255,135,125,.5); color: #fff5f3; background: rgba(196,66,59,.55); }
+.totals-delete-cancel:disabled, .totals-delete-confirm:disabled { cursor: wait; opacity: .65; }
 
 @media (max-width: 400px) {
   .totals-form-grid { grid-template-columns: 1fr; }
-  .totals-chart { height: 140px; }
+  .totals-chart { height: 140px; grid-template-columns: 57px minmax(0,1fr); }
 }
 
 @media (max-width: 600px) {

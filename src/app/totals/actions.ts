@@ -52,6 +52,19 @@ export async function updateAccountBalance(input: { accountId: string; amount: n
   return { data: { ...data, balance: Number(data.balance) }, error: null };
 }
 
+export async function deleteAccount(accountId: string): Promise<{ error: string | null }> {
+  const { householdId, error: membershipError } = await getHousehold();
+  if (!householdId) return { error: membershipError };
+  if (typeof accountId !== "string" || !/^[0-9a-f-]{36}$/i.test(accountId)) return { error: "Invalid account." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("accounts").delete().eq("id", accountId).eq("household_id", householdId).select("id").maybeSingle();
+  if (error) return { error: error.message };
+  if (!data) return { error: "Account not found." };
+  revalidatePath("/totals");
+  return { error: null };
+}
+
 export async function recordTotalSnapshot(): Promise<ActionResult<TotalSnapshot>> {
   const { householdId, error: membershipError } = await getHousehold();
   if (!householdId) return { data: null, error: membershipError };

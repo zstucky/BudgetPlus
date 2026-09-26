@@ -14,13 +14,13 @@ export default async function TotalsPage() {
   const supabase = await createClient();
   const [accountsResult, snapshotsResult] = await Promise.all([
     supabase.from("accounts").select("id, name, balance, balance_type").eq("household_id", membership.householdId).order("created_at", { ascending: true }),
-    supabase.from("total_snapshots").select("id, total, created_at").eq("household_id", membership.householdId).order("created_at", { ascending: true }),
+    supabase.from("total_snapshots").select("id, total, created_at").eq("household_id", membership.householdId).order("created_at", { ascending: false }).limit(15),
   ]);
   if (accountsResult.error) return <TotalsLoadError message={accountsResult.error.message} />;
   if (snapshotsResult.error) return <TotalsLoadError message={snapshotsResult.error.message} />;
 
   const accounts: Account[] = (accountsResult.data ?? []).map((account) => ({ ...account, balance: Number(account.balance) }));
-  const snapshots: TotalSnapshot[] = (snapshotsResult.data ?? []).map((snapshot) => ({ ...snapshot, total: Number(snapshot.total) }));
+  const snapshots: TotalSnapshot[] = (snapshotsResult.data ?? []).map((snapshot) => ({ ...snapshot, total: Number(snapshot.total) })).reverse();
 
   return (
     <main className="monthly-page">
