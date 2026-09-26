@@ -440,6 +440,27 @@ button, input { font: inherit; }
 .totals-chart-line { fill: none; stroke: #a8f5cc; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 5px rgba(94,230,168,.35)); }
 .totals-chart-dot { fill: #a8f5cc; stroke: #14241f; stroke-width: .8; vector-effect: non-scaling-stroke; }
 .totals-chart-dates { display: flex; justify-content: space-between; padding: 7px 3px 0; color: var(--muted); font-size: .7rem; }
+.lessons-content { padding-bottom: 16px; }
+.lessons-chart-card { margin-bottom: 14px; }
+.lessons-chart-card .calendar-heading { padding-bottom: 12px; }
+.lessons-chart-card h2 { margin: 0; color: #f3f7f5; font-size: 1.25rem; letter-spacing: -.035em; }
+.lessons-chart { display: grid; height: 184px; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px; padding: 13px 10px 8px; border: 1px solid rgba(220,235,227,.13); border-radius: 14px; background: linear-gradient(180deg, rgba(6,14,20,.33), rgba(6,14,20,.12)); }
+.lessons-bar-column { display: grid; min-width: 0; grid-template-rows: 20px minmax(0,1fr) 19px; justify-items: center; gap: 5px; }
+.lessons-bar-value { width: 100%; overflow: hidden; color: var(--muted); font-size: clamp(.53rem, 2.1vw, .68rem); font-variant-numeric: tabular-nums; text-align: center; text-overflow: clip; white-space: nowrap; }
+.lessons-bar-track { display: flex; width: min(100%, 33px); height: 100%; align-items: flex-end; justify-content: center; overflow: hidden; border-radius: 8px 8px 4px 4px; background: rgba(255,255,255,.035); }
+.lessons-bar { width: 100%; min-height: 0; border: 1px solid rgba(164,245,204,.45); border-bottom: 0; border-radius: 7px 7px 2px 2px; background: linear-gradient(180deg, #a8f5cc, #42cd8e); box-shadow: 0 0 17px rgba(94,230,168,.17); transition: height .25s ease; }
+.lessons-bar-label { color: var(--muted); font-size: .7rem; font-weight: 700; }
+.lessons-form { margin-top: 0; }
+.lessons-form-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.lessons-form-fields > div { display: grid; align-content: start; gap: 5px; min-width: 0; }
+.lessons-form-fields .lessons-description-field { grid-column: 1 / -1; }
+.lessons-form-fields input[type="text"] { width: 100%; min-width: 0; min-height: 47px; padding: 0 12px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); background: rgba(7,16,22,.42); font: inherit; }
+.lessons-form-fields input[type="text"]:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.lessons-form-fields input[type="date"] { display: flex; align-items: center; width: 100%; min-width: 0; max-width: 100%; min-height: 47px; padding: 0 6px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.42); font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.lessons-form-fields input[type="date"]::-webkit-date-and-time-value { min-height: 1.2em; text-align: left; }
+.lessons-form-fields input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.lessons-form-fields input[type="date"]:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.lessons-list { margin-top: 14px; }
 .totals-negative { color: #ffaaa4 !important; }
 .totals-accounts ul { border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
 .totals-accounts li { display: block; min-height: 0; padding: 0; }
@@ -503,6 +524,8 @@ button, input { font: inherit; }
 @media (max-width: 400px) {
   .monthly-form-fields { grid-template-columns: minmax(0, 1fr) 82px; }
   .monthly-form-fields > div:first-child { grid-column: 1 / -1; }
+  .lessons-chart { gap: 5px; padding-right: 7px; padding-left: 7px; }
+  .lessons-chart-card { padding-right: 12px; padding-left: 12px; }
 }
 
 /* Weekly dashboard shares the Monthly page's stacked glass-card layout. */
