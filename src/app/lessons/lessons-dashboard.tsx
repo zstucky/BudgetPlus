@@ -114,7 +114,7 @@ export default function LessonsDashboard({
             <input id="lesson-description" type="text" required maxLength={120} value={description} onChange={(event) => setDescription(event.target.value)} />
           </div>
         </div>
-        <button type="submit" disabled={saving}>{saving ? "Adding..." : "Add lesson"}</button>
+        <button type="submit" disabled={saving}>{saving ? "Adding..." : "Add"}</button>
         {error && <p className="monthly-error" role="alert">{error}</p>}
       </form>
 
