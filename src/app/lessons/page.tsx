@@ -24,7 +24,7 @@ export default async function LessonsPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("lessons")
-    .select("id, amount, lesson_date, description")
+    .select("id, amount, lesson_date, description, type")
     .eq("household_id", membership.householdId)
     .gte("lesson_date", startKey)
     .lt("lesson_date", endKey)
@@ -37,11 +37,14 @@ export default async function LessonsPage() {
     amount: Number(lesson.amount),
     lesson_date: lesson.lesson_date,
     description: lesson.description?.trim() || "Lesson",
+    type: lesson.type === "expense" ? "expense" : "income",
   }));
-  const totals = new Map<string, number>();
+  const totals = new Map<string, { income: number; expense: number }>();
   for (const lesson of lessons) {
     const key = lesson.lesson_date.slice(0, 7);
-    totals.set(key, (totals.get(key) ?? 0) + lesson.amount);
+    const month = totals.get(key) ?? { income: 0, expense: 0 };
+    month[lesson.type] += lesson.amount;
+    totals.set(key, month);
   }
   const months: LessonMonth[] = Array.from({ length: 6 }, (_, index) => {
     const date = new Date(firstChartMonth.getFullYear(), firstChartMonth.getMonth() + index, 1);
@@ -49,7 +52,9 @@ export default async function LessonsPage() {
     return {
       key,
       label: date.toLocaleDateString("en-US", { month: "short" }),
-      total: totals.get(key) ?? 0,
+      income: totals.get(key)?.income ?? 0,
+      expense: totals.get(key)?.expense ?? 0,
+      net: (totals.get(key)?.income ?? 0) - (totals.get(key)?.expense ?? 0),
     };
   });
 

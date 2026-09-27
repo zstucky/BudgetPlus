@@ -448,9 +448,18 @@ button, input { font: inherit; }
 .lessons-bar-column { display: grid; min-width: 0; grid-template-rows: 20px minmax(0,1fr) 19px; justify-items: center; gap: 5px; }
 .lessons-bar-value { width: 100%; overflow: hidden; color: var(--muted); font-size: clamp(.53rem, 2.1vw, .68rem); font-variant-numeric: tabular-nums; text-align: center; text-overflow: clip; white-space: nowrap; }
 .lessons-bar-track { display: flex; width: min(100%, 33px); height: 100%; align-items: flex-end; justify-content: center; overflow: hidden; border-radius: 8px 8px 4px 4px; background: rgba(255,255,255,.035); }
-.lessons-bar { width: 100%; min-height: 0; border: 1px solid rgba(164,245,204,.45); border-bottom: 0; border-radius: 7px 7px 2px 2px; background: linear-gradient(180deg, #a8f5cc, #42cd8e); box-shadow: 0 0 17px rgba(94,230,168,.17); transition: height .25s ease; }
+.lessons-bar-stack { display: flex; width: 100%; min-height: 0; flex-direction: column-reverse; align-items: stretch; overflow: hidden; border-radius: 7px 7px 2px 2px; transition: height .25s ease; }
+.lessons-bar-net, .lessons-bar-expense { width: 100%; min-height: 0; flex: 0 0 auto; }
+.lessons-bar-net { border: 1px solid rgba(164,245,204,.45); border-bottom: 0; background: linear-gradient(180deg, #a8f5cc, #42cd8e); box-shadow: 0 0 17px rgba(94,230,168,.17); }
+.lessons-bar-expense { border: 1px solid rgba(255,157,149,.48); border-bottom: 0; background: linear-gradient(180deg, #ffaaa4, #e95e58); box-shadow: 0 0 17px rgba(255,98,87,.15); }
+.lessons-net-negative { color: #ffaaa4; }
 .lessons-bar-label { color: var(--muted); font-size: .7rem; font-weight: 700; }
 .lessons-form { margin-top: 0; }
+.lessons-type-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 4px; border: 1px solid rgba(220,235,227,.17); border-radius: 13px; background: rgba(6,14,20,.3); }
+.lessons-type-tabs button { min-height: 35px; border: 1px solid transparent; border-radius: 9px; color: var(--muted); background: transparent; font-weight: 800; cursor: pointer; }
+.lessons-type-tabs button:hover { color: var(--ink); background: rgba(255,255,255,.05); }
+.lessons-type-tabs button.active { border-color: rgba(220,235,227,.24); color: #f3f7f5; background: rgba(220,235,227,.13); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+.lessons-expense-amount { color: #ffaaa4; }
 .lessons-form-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .lessons-form-fields > div { display: grid; align-content: start; gap: 5px; min-width: 0; }
 .lessons-form-fields .lessons-description-field { grid-column: 1 / -1; }

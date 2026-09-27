@@ -3,8 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { addLesson, deleteLesson } from "./actions";
 
-export type Lesson = { id: string; amount: number; lesson_date: string; description: string };
-export type LessonMonth = { key: string; label: string; total: number };
+export type Lesson = { id: string; amount: number; lesson_date: string; description: string; type: "income" | "expense" };
+export type LessonMonth = { key: string; label: string; income: number; expense: number; net: number };
 
 function money(amount: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
@@ -29,19 +29,20 @@ export default function LessonsDashboard({
   const [months, setMonths] = useState(initialMonths);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("Lesson");
+  const [recordType, setRecordType] = useState<"income" | "expense">("income");
   const [lessonDate, setLessonDate] = useState(currentDate);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const currentTotal = lessons.reduce((sum, lesson) => sum + lesson.amount, 0);
-  const maxTotal = Math.max(...months.map((month) => month.total), 0);
+  const currentTotal = lessons.reduce((sum, lesson) => sum + (lesson.type === "income" ? lesson.amount : 0), 0);
+  const maxTotal = Math.max(...months.map((month) => Math.max(month.income, month.expense)), 0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setSaving(true);
     try {
-      const result = await addLesson({ amount: Number(amount), lessonDate, description });
+      const result = await addLesson({ amount: Number(amount), lessonDate, description, type: recordType });
       if (result.error || !result.lesson) {
         setError(result.error ?? "Unable to add lesson.");
         return;
@@ -49,7 +50,12 @@ export default function LessonsDashboard({
       const added = result.lesson;
       setLessons((current) => [added, ...current].sort((a, b) => b.lesson_date.localeCompare(a.lesson_date)));
       const monthKey = added.lesson_date.slice(0, 7);
-      setMonths((current) => current.map((month) => month.key === monthKey ? { ...month, total: month.total + added.amount } : month));
+      setMonths((current) => current.map((month) => {
+        if (month.key !== monthKey) return month;
+        const income = month.income + (added.type === "income" ? added.amount : 0);
+        const expense = month.expense + (added.type === "expense" ? added.amount : 0);
+        return { ...month, income, expense, net: income - expense };
+      }));
       setAmount("");
       setDescription("Lesson");
       setLessonDate(currentDate);
@@ -69,7 +75,12 @@ export default function LessonsDashboard({
       }
       setLessons((current) => current.filter((entry) => entry.id !== lesson.id));
       const monthKey = lesson.lesson_date.slice(0, 7);
-      setMonths((current) => current.map((month) => month.key === monthKey ? { ...month, total: Math.max(0, month.total - lesson.amount) } : month));
+      setMonths((current) => current.map((month) => {
+        if (month.key !== monthKey) return month;
+        const income = Math.max(0, month.income - (lesson.type === "income" ? lesson.amount : 0));
+        const expense = Math.max(0, month.expense - (lesson.type === "expense" ? lesson.amount : 0));
+        return { ...month, income, expense, net: income - expense };
+      }));
     } finally {
       setDeletingId(null);
     }
@@ -84,13 +95,20 @@ export default function LessonsDashboard({
           <div><p className="totals-kicker">Lessons - This Month</p><h2 id="lessons-chart-title">{money(currentTotal)}</h2></div>
           <span className="totals-chart-label">By month</span>
         </div>
-        <div className="lessons-chart" role="img" aria-label={`Lesson income for the last six months: ${months.map((month) => `${month.label} ${money(month.total)}`).join(", ")}`}>
+        <div className="lessons-chart" role="img" aria-label={`Net lesson income for the last six months: ${months.map((month) => `${month.label} ${money(month.net)} net, ${money(month.income)} income, ${money(month.expense)} expenses`).join("; ")}`}>
           {months.map((month) => {
-            const height = maxTotal > 0 ? Math.max((month.total / maxTotal) * 100, month.total > 0 ? 5 : 0) : 0;
+            const netIncome = Math.max(month.net, 0);
+            const stackTotal = netIncome + month.expense;
+            const stackHeight = maxTotal > 0 ? (stackTotal / maxTotal) * 100 : 0;
+            const greenHeight = stackTotal > 0 ? (netIncome / stackTotal) * 100 : 0;
+            const redHeight = stackTotal > 0 ? (month.expense / stackTotal) * 100 : 0;
             return (
               <div className="lessons-bar-column" key={month.key}>
-                <span className="lessons-bar-value">{month.total > 0 ? money(month.total) : "—"}</span>
-                <div className="lessons-bar-track"><div className="lessons-bar" style={{ height: `${height}%` }} /></div>
+                <span className={`lessons-bar-value${month.net < 0 ? " lessons-net-negative" : ""}`}>{money(month.net)}</span>
+                <div className="lessons-bar-track"><div className="lessons-bar-stack" style={{ height: `${stackHeight}%` }}>
+                  {netIncome > 0 && <div className="lessons-bar-net" style={{ height: `${greenHeight}%` }} />}
+                  {month.expense > 0 && <div className="lessons-bar-expense" style={{ height: `${redHeight}%` }} />}
+                </div></div>
                 <span className="lessons-bar-label">{month.label}</span>
               </div>
             );
@@ -100,13 +118,17 @@ export default function LessonsDashboard({
 
       <form className="monthly-form lessons-form" onSubmit={handleSubmit}>
         <h2>Add a lesson</h2>
+        <div className="lessons-type-tabs" role="group" aria-label="Lesson entry type">
+          <button type="button" aria-pressed={recordType === "income"} className={recordType === "income" ? "active" : ""} onClick={() => setRecordType("income")}>Income</button>
+          <button type="button" aria-pressed={recordType === "expense"} className={recordType === "expense" ? "active" : ""} onClick={() => setRecordType("expense")}>Expense</button>
+        </div>
         <div className="lessons-form-fields">
           <div>
             <label htmlFor="lesson-amount">Amount</label>
             <div className="monthly-amount-input"><span aria-hidden="true">$</span><input id="lesson-amount" required type="number" inputMode="decimal" min="0.01" max="99999999.99" step="0.01" placeholder="0.00" value={amount} onChange={(event) => setAmount(event.target.value)} /></div>
           </div>
           <div>
-            <label htmlFor="lesson-date">Lesson date</label>
+            <label htmlFor="lesson-date">Date</label>
             <input id="lesson-date" type="date" required value={lessonDate} onChange={(event) => setLessonDate(event.target.value)} />
           </div>
           <div className="lessons-description-field">
@@ -125,8 +147,8 @@ export default function LessonsDashboard({
           <ul>{lessons.map((lesson) => (
             <li key={lesson.id}>
               <div className="bill-details"><strong>{lesson.description}</strong><span>{displayDate(lesson.lesson_date)}</span></div>
-              <strong className="bill-amount">{money(lesson.amount)}</strong>
-              <button type="button" className="bill-delete" aria-label={`Delete lesson for ${money(lesson.amount)} on ${displayDate(lesson.lesson_date)}`} disabled={deletingId === lesson.id} onClick={() => handleDelete(lesson)}>{deletingId === lesson.id ? "…" : "×"}</button>
+              <strong className={`bill-amount${lesson.type === "expense" ? " lessons-expense-amount" : ""}`}>{lesson.type === "expense" ? "−" : "+"}{money(lesson.amount)}</strong>
+              <button type="button" className="bill-delete" aria-label={`Delete ${lesson.type} ${lesson.description} for ${money(lesson.amount)} on ${displayDate(lesson.lesson_date)}`} disabled={deletingId === lesson.id} onClick={() => handleDelete(lesson)}>{deletingId === lesson.id ? "…" : "×"}</button>
             </li>
           ))}</ul>
         )}
