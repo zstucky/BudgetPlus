@@ -423,6 +423,47 @@ button, input { font: inherit; }
 .bill-delete:disabled { cursor: wait; }
 .monthly-empty { margin: 0; padding: 19px 8px 8px; border-top: 1px solid rgba(220,235,227,.13); color: var(--muted); font-size: .9rem; text-align: center; }
 
+/* Cars page */
+.cars-content { padding-bottom: 16px; }
+.cars-vehicles > .monthly-list-heading { padding: 0 8px 12px; }
+.cars-vehicles > ul { display: grid; gap: 11px; margin: 0; padding: 0; list-style: none; }
+.cars-vehicles > ul > li.cars-vehicle-item { display: block; min-height: 0; padding: 0; overflow: hidden; border: 1px solid rgba(220,235,227,.24); border-radius: 19px; background: linear-gradient(145deg, rgba(223,239,230,.105), rgba(17,29,38,.58) 53%, rgba(94,230,168,.045)); box-shadow: inset 0 1px rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.12); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.cars-vehicle-toggle { display: grid; width: 100%; min-height: 70px; grid-template-columns: 38px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 10px 13px; border: 0; color: var(--ink); background: transparent; text-align: left; cursor: pointer; }
+.cars-vehicle-toggle:hover { background: rgba(94,230,168,.045); }
+.cars-vehicle-icon { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid rgba(94,230,168,.25); border-radius: 12px; color: #a8f5cc; background: rgba(94,230,168,.09); font-size: 1.45rem; }
+.cars-vehicle-toggle .bill-details span { font-size: .76rem; }
+.cars-vehicle-panel { padding: 2px 12px 14px; border-top: 1px solid rgba(220,235,227,.11); background: rgba(3,10,14,.16); }
+.cars-history-card { padding: 9px 11px 7px; margin-top: 9px; border: 1px solid rgba(220,235,227,.16); border-radius: 15px; background: rgba(6,14,20,.3); box-shadow: inset 0 1px rgba(255,255,255,.04); }
+.cars-history-heading { display: flex; align-items: center; justify-content: space-between; padding: 2px 1px 9px; }
+.cars-history-heading h3, .cars-maintenance-form h3 { margin: 0; font-size: .94rem; }
+.cars-history-heading h3 { color: #a8f5cc; }
+.cars-history-heading span { color: var(--muted); font-size: .8rem; }
+.cars-history-list { margin: 0; padding: 0; list-style: none; }
+.cars-history-list li { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 3px; border-top: 1px solid rgba(220,235,227,.1); }
+.cars-history-list .bill-details strong { font-size: .88rem; }
+.cars-history-list .bill-details span { font-size: .74rem; }
+.cars-no-history { margin: 0; padding: 8px 2px 12px; color: var(--muted); font-size: .82rem; }
+.cars-maintenance-form { gap: 4px; padding: 9px; margin-top: 8px; }
+.cars-maintenance-form h3 { margin-bottom: 1px; color: #a8f5cc; }
+.cars-maintenance-form.totals-form > input { min-height: 36px; }
+.cars-maintenance-form > input, .cars-entry-grid > div > input[type="date"], .cars-entry-grid > div > input[type="number"], .cars-add-form input { width: 100%; min-height: 36px; padding: 0 9px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; outline: 0; color: var(--ink); background: rgba(7,16,22,.65); font: inherit; }
+.cars-entry-grid > div > input[type="date"] { color-scheme: dark; }
+.cars-maintenance-form input:focus, .cars-add-form input:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.cars-entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.cars-service-fields { grid-template-columns: minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.2fr); gap: 5px; }
+.cars-entry-grid > div { display: grid; min-width: 0; gap: 5px; }
+.cars-entry-grid label, .cars-maintenance-form label, .cars-add-form label { color: #dbe6e1; font-size: .75rem; font-weight: 700; }
+.cars-service-fields > div > input[type="date"] { display: flex; min-width: 0; max-width: 100%; padding: 0 4px; appearance: none; -webkit-appearance: none; font-size: .68rem; }
+.cars-service-fields > div > input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.cars-service-fields > div > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.cars-cost-input { display: flex; min-width: 0; min-height: 36px; align-items: center; gap: 4px; padding: 0 7px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; color: var(--muted); background: rgba(7,16,22,.65); font-size: .76rem; }
+.cars-cost-input:focus-within { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.cars-cost-input input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; }
+.cars-maintenance-form .cars-cost-input input:focus { border: 0; box-shadow: none; }
+.cars-add-form { margin-top: 11px; }
+.cars-add-form .totals-form-grid { grid-template-columns: .7fr 1fr; }
+.cars-add-form .totals-primary-button, .cars-maintenance-form .totals-primary-button { width: 100%; min-height: 36px; }
+
 /* Totals page */
 .totals-content { padding-bottom: 16px; }
 .totals-chart-card { padding: 16px 16px 12px; margin-bottom: 15px; }
