@@ -51,7 +51,11 @@ export default function CarsDashboard({ initialVehicles, initialMaintenance }: {
     try {
       const result = await addMaintenance({ vehicleId, description: String(form.get("description") ?? ""), cost: String(form.get("cost") ?? ""), serviceDate: String(form.get("service-date") ?? ""), mileage: String(form.get("mileage") ?? "") });
       if (result.error || !result.maintenance) { setError(result.error ?? "Unable to add service record."); return; }
-      setHistory((current) => [result.maintenance!, ...current].sort((a, b) => b.service_date.localeCompare(a.service_date)));
+      setHistory((current) => [result.maintenance!, ...current].sort((a, b) => {
+        if (a.mileage === null) return b.mileage === null ? b.service_date.localeCompare(a.service_date) : 1;
+        if (b.mileage === null) return -1;
+        return b.mileage - a.mileage || b.service_date.localeCompare(a.service_date);
+      }));
       formElement.reset();
       setMaintenanceDate(new Date().toLocaleDateString("en-CA"));
     } finally { setSavingMaintenance(false); }

@@ -29,6 +29,7 @@ export default async function CarsPage() {
       .from("vehicle_maintenance")
       .select("id, vehicle_id, description, cost, service_date, mileage")
       .in("vehicle_id", vehicles.map((vehicle) => vehicle.id))
+      .order("mileage", { ascending: false, nullsFirst: false })
       .order("service_date", { ascending: false });
     if (historyResult.error) return <CarsLoadError message={historyResult.error.message} />;
     maintenance = (historyResult.data ?? []).map((entry) => ({
