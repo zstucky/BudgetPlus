@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "../bottom-nav";
-import CarsDashboard, { type Maintenance, type Vehicle } from "./cars-dashboard";
+import CarsDashboard from "./cars-dashboard";
+import type { Maintenance, Vehicle } from "./actions";
 
 export default async function CarsPage() {
   const membership = await getCurrentMembership();
