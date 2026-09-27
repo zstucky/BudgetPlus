@@ -98,11 +98,11 @@ export default function CarsDashboard({ initialVehicles, initialMaintenance }: {
             </div>}
           </li>;
         })}</ul> : <p className="monthly-empty">Add a vehicle to start tracking its maintenance.</p>}
-        <button type="button" className="totals-add-account" onClick={() => { setShowAdd((current) => !current); setError(null); }}>{showAdd ? "− Cancel" : "+ Add vehicle"}</button>
+        <button type="button" className="totals-add-account" onClick={() => { setShowAdd((current) => !current); setError(null); }}>{showAdd ? "Cancel" : "+ Add vehicle"}</button>
         {showAdd && <form className="totals-form cars-add-form" onSubmit={createVehicle}>
           <label htmlFor="vehicle-name">Vehicle name</label><input id="vehicle-name" name="name" required maxLength={80} placeholder="Family car, Work truck…" />
-          <div className="totals-form-grid"><div><label htmlFor="vehicle-year">Year</label><input id="vehicle-year" name="year" type="number" min="1886" max={new Date().getFullYear() + 1} step="1" placeholder="Optional" /></div><div><label htmlFor="vehicle-make">Make</label><input id="vehicle-make" name="make" maxLength={60} placeholder="Toyota" /></div></div>
-          <label htmlFor="vehicle-model">Model</label><input id="vehicle-model" name="model" maxLength={60} placeholder="Camry" />
+          <div className="totals-form-grid"><div><label htmlFor="vehicle-year">Year</label><input id="vehicle-year" name="year" type="number" min="1886" max={new Date().getFullYear() + 1} step="1" placeholder="(Optional)" /></div><div><label htmlFor="vehicle-make">Make</label><input id="vehicle-make" name="make" maxLength={60} placeholder="(Optional)" /></div></div>
+          <label htmlFor="vehicle-model">Model</label><input id="vehicle-model" name="model" maxLength={60} placeholder="(Optional)" />
           <button type="submit" className="totals-primary-button" disabled={savingVehicle}>{savingVehicle ? "Saving…" : "Add vehicle"}</button>
         </form>}
       </section>
