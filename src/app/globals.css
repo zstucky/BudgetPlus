@@ -511,6 +511,43 @@ button, input { font: inherit; }
 .settings-form .totals-primary-button { width: 100%; min-height: 46px; margin-top: 8px; margin-bottom: 4px; }
 .settings-form .totals-primary-button:disabled { cursor: wait; opacity: .68; }
 
+/* Outreach page */
+.outreach-content { padding-bottom: 16px; }
+.outreach-balance { margin-bottom: 12px; }
+.outreach-balance .calendar-heading { padding-bottom: 8px; }
+.outreach-balance h2.outreach-negative { color: #ffaaa4; }
+.outreach-form { margin-top: 0; }
+.outreach-form + .outreach-form { margin-top: 12px; }
+.outreach-form-fields { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(110px,.8fr); gap: 9px; }
+.outreach-form-fields > div { display: grid; min-width: 0; gap: 5px; }
+.outreach-form-fields label, .outreach-spend-item > label { color: #dbe6e1; font-size: .78rem; font-weight: 700; }
+.outreach-form-fields > div > input { width: 100%; min-width: 0; min-height: 46px; padding: 0 11px; border: 1px solid rgba(224,238,234,.3); border-radius: 11px; outline: 0; color: var(--ink); background: rgba(7,16,22,.55); }
+.outreach-form-fields > div > input:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.outreach-form-fields .monthly-amount-input { min-height: 46px; border-width: 1px; border-radius: 11px; }
+.outreach-form > button[type="submit"] { min-height: 42px; margin-top: 2px; border: 1px solid rgba(164,245,204,.58); border-radius: 11px; color: #092015; background: linear-gradient(100deg, #a8f5cc, #5ee6a8); font-weight: 800; cursor: pointer; }
+.outreach-form > button[type="submit"]:disabled { cursor: wait; opacity: .68; }
+.outreach-list { margin-top: 13px; }
+.outreach-list > ul { margin: 0; padding: 0; list-style: none; overflow: hidden; border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
+.outreach-list > ul > .outreach-activity-item { display: block; min-height: 0; padding: 0; }
+.outreach-activity-item + .outreach-activity-item { border-top: 1px solid rgba(220,235,227,.13); }
+.outreach-activity-row, .outreach-activity-trigger { display: grid; width: 100%; min-height: 68px; grid-template-columns: minmax(0,1fr) auto 22px; align-items: center; gap: 9px; padding: 11px 13px; }
+.outreach-activity-row { color: var(--ink); }
+.outreach-activity-trigger { border: 0; color: var(--ink); background: transparent; text-align: left; cursor: pointer; }
+.outreach-activity-trigger:hover, .outreach-activity-trigger[aria-expanded="true"] { background: rgba(94,230,168,.045); }
+.outreach-activity-row .bill-details strong, .outreach-activity-trigger .bill-details strong { font-size: .94rem; }
+.outreach-activity-row .bill-details span, .outreach-activity-trigger .bill-details span { font-size: .76rem; }
+.outreach-activity-spacer { width: 22px; }
+.outreach-activity-amount { color: #ffaaa4; font-variant-numeric: tabular-nums; }
+.outreach-activity-amount.outreach-income-amount { color: #a8f5cc; }
+.outreach-impact-panel { padding: 0 13px 13px; }
+.outreach-impact-panel > label { display: block; margin-bottom: 5px; color: #a8f5cc; font-size: .8rem; font-weight: 700; }
+.outreach-impact-panel textarea { display: block; width: 100%; min-height: 78px; padding: 10px 11px; resize: vertical; border: 1px solid rgba(224,238,234,.3); border-radius: 11px; outline: 0; color: var(--ink); background: rgba(7,16,22,.55); font: inherit; font-size: .88rem; line-height: 1.45; }
+.outreach-impact-panel textarea::placeholder { color: #829099; }
+.outreach-impact-panel textarea:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.outreach-impact-actions { display: flex; min-height: 36px; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 7px; }
+.outreach-impact-actions .totals-secondary-button { min-height: 34px; padding: 0 12px; font-size: .78rem; }
+.outreach-impact-actions > span { color: #a8f5cc; font-size: .78rem; }
+
 /* Totals page */
 .totals-content { padding-bottom: 16px; }
 .totals-chart-card { padding: 16px 16px 12px; margin-bottom: 15px; }
@@ -621,6 +658,7 @@ button, input { font: inherit; }
 @media (max-width: 400px) {
   .monthly-form-fields { grid-template-columns: minmax(0, 1fr) 82px; }
   .monthly-form-fields > div:first-child { grid-column: 1 / -1; }
+  .outreach-form-fields { grid-template-columns: 1fr; }
   .lessons-chart { gap: 5px; padding-right: 7px; padding-left: 7px; }
   .lessons-chart-card { padding-right: 12px; padding-left: 12px; }
 }
