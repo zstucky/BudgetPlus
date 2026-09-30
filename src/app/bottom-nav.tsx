@@ -8,7 +8,7 @@ const tabs = [
   { label: "Monthly", href: "/monthly" },
   { label: "Totals", href: "/totals" },
   { label: "Lessons", href: "/lessons" },
-  { label: "Cars", href: "/cars" },
+  { label: "Outreach", href: "/outreach" },
 ];
 
 export default function BottomNav() {

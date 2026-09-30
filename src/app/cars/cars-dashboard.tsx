@@ -72,7 +72,7 @@ export default function CarsDashboard({ initialVehicles, initialMaintenance }: {
           const expanded = expandedId === vehicle.id;
           return <li className="cars-vehicle-item" key={vehicle.id}>
             <button type="button" className="cars-vehicle-toggle" aria-expanded={expanded} onClick={() => { setExpandedId(expanded ? null : vehicle.id); setError(null); }}>
-              <span className="cars-vehicle-icon" aria-hidden="true">⌁</span>
+              <span className="cars-vehicle-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 12 6.6 7.5A2 2 0 0 1 8.5 6h7a2 2 0 0 1 1.9 1.5L19 12l1.5 1v5h-17v-5L5 12Z"/><path d="M4 13h16M7.5 15.5h.01M16.5 15.5h.01M7 18v1m10-1v1"/></svg></span>
               <span className="bill-details"><strong>{vehicle.name}</strong><span>{vehicleDetails(vehicle)} · {entries.length} service {entries.length === 1 ? "record" : "records"}</span></span>
               <span className="totals-chevron" aria-hidden="true">{expanded ? "⌄" : "›"}</span>
             </button>
