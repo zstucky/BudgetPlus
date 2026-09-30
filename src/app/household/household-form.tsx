@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { updateHousehold } from "./actions";
 
@@ -18,7 +17,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button type="submit" disabled={pending}>
+    <button className="totals-primary-button" type="submit" disabled={pending}>
       {pending ? "Saving..." : "Save Changes"}
     </button>
   );
@@ -34,8 +33,8 @@ export default function HouseholdForm({
   );
 
   return (
-    <form className="auth-form" action={formAction}>
-      <label htmlFor="name">Household Name</label>
+    <form className="settings-form" action={formAction}>
+      <label htmlFor="name">Household name</label>
 
       <input
         id="name"
@@ -46,9 +45,9 @@ export default function HouseholdForm({
         maxLength={100}
       />
 
-      <label htmlFor="weeklyBudget">Weekly Budget</label>
+      <label htmlFor="weeklyBudget">Weekly budget</label>
 
-      <div className="setup-budget-input">
+      <div className="settings-budget-input">
         <span aria-hidden="true">$</span>
 
         <input
@@ -64,16 +63,13 @@ export default function HouseholdForm({
       </div>
 
       {state.error && (
-        <p className="auth-error">
+        <p className="monthly-error" role="alert">
           {state.error}
         </p>
       )}
 
       <SubmitButton />
 
-      <Link className="auth-switch" href="/">
-        Cancel
-      </Link>
     </form>
   );
 }

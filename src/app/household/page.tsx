@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
+import BottomNav from "../bottom-nav";
 import HouseholdForm from "./household-form";
 
 export default async function HouseholdPage() {
@@ -12,11 +13,11 @@ export default async function HouseholdPage() {
 
   if (membership.error) {
     return (
-      <main className="auth-page">
-        <section className="auth-card">
-          <p className="auth-brand">Weekly Budget</p>
-          <h1>We couldn&apos;t load your household</h1>
-          <p className="auth-error">{membership.error}</p>
+      <main className="monthly-page">
+        <BottomNav />
+        <section className="monthly-content settings-content">
+          <header className="monthly-heading"><h1>Household</h1></header>
+          <p className="monthly-error" role="alert">We couldn&apos;t load your household: {membership.error}</p>
         </section>
       </main>
     );
@@ -36,33 +37,28 @@ export default async function HouseholdPage() {
 
   if (householdError || !household) {
     return (
-      <main className="auth-page">
-        <section className="auth-card">
-          <p className="auth-brand">Weekly Budget</p>
-          <h1>We couldn&apos;t load your household</h1>
-          <p className="auth-error">
-            {householdError?.message ?? "Household not found."}
-          </p>
+      <main className="monthly-page">
+        <BottomNav />
+        <section className="monthly-content settings-content">
+          <header className="monthly-heading"><h1>Household</h1></header>
+          <p className="monthly-error" role="alert">We couldn&apos;t load your household: {householdError?.message ?? "Household not found."}</p>
         </section>
       </main>
     );
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <p className="auth-brand">Weekly Budget</p>
-
-        <h1>Edit Household</h1>
-
-        <p className="auth-copy">
-          Update your household name or weekly budget.
-        </p>
-
-        <HouseholdForm
-          name={household.name}
-          weeklyBudget={Number(household.weekly_budget)}
-        />
+    <main className="monthly-page">
+      <BottomNav />
+      <section className="monthly-content settings-content" aria-labelledby="settings-title">
+        <header className="monthly-heading">
+          <h1 id="settings-title">Household</h1>
+        </header>
+        <section className="monthly-bills settings-card" aria-labelledby="household-details-title">
+          <div className="monthly-list-heading"><h2 id="household-details-title">Household details</h2></div>
+          <p className="settings-description">Update your household name and weekly budget.</p>
+          <HouseholdForm name={household.name} weeklyBudget={Number(household.weekly_budget)} />
+        </section>
       </section>
     </main>
   );
