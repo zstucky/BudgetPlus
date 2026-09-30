@@ -16,7 +16,7 @@ export default function BottomNav() {
 
   return (
     <>
-      {pathname !== "/household" && <Link href="/household" className="household-float-button" aria-label="Edit household" title="Edit household">
+      {pathname !== "/household" && <Link href="/household" className="household-float-button" aria-label="Household settings">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="m3.5 10 8.5-7 8.5 7" />
           <path d="M5.5 9v11h13V9M9.5 20v-6h5v6" />

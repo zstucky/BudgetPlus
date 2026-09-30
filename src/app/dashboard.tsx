@@ -1,9 +1,7 @@
 "use client";
 
 import { SubmitEvent, useState, CSSProperties } from "react";
-import { logout } from "@/app/auth/actions";
 import { addTransaction, resetTransactions, deleteTransaction } from "@/app/transactions/actions";
-import Link from "next/link";
 import BottomNav from "./bottom-nav";
 
 type Expense = {
@@ -205,16 +203,6 @@ return (
         Reset weekly budget
       </button>
 
-      <div className="account-actions">
-        <form action={logout}>
-          <button className="logout-button" type="submit">
-            Log out
-          </button>
-        </form>
-        <Link className="household-button" href="/household">
-          Edit household
-        </Link>
-      </div>
     </section>
   </main>
 );

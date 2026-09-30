@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { logout } from "@/app/auth/actions";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "../bottom-nav";
@@ -67,6 +68,13 @@ export default async function HouseholdPage() {
             <span className="totals-chevron" aria-hidden="true">›</span>
           </Link>
         </section>
+        <form action={logout} className="monthly-bills settings-menu-card settings-logout-card">
+          <button type="submit" className="settings-menu-item settings-logout-button">
+            <span className="settings-menu-icon settings-logout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg></span>
+            <span className="bill-details"><strong>Log out</strong><span>Sign out of this account</span></span>
+            <span className="settings-menu-spacer" aria-hidden="true" />
+          </button>
+        </form>
       </section>
     </main>
   );
