@@ -10,10 +10,10 @@ export type OutreachSpend = { id: string; amount: number; description: string; i
 function validateEntry(amountValue: unknown, descriptionValue: unknown) {
   const amount = Number(amountValue);
   const description = typeof descriptionValue === "string" ? descriptionValue.trim() : "";
-  if (!Number.isFinite(amount) || amount <= 0 || amount > 99999999.99) return { error: "Enter an amount greater than zero." };
-  if (!description) return { error: "Enter a short description." };
-  if (description.length > 120) return { error: "Descriptions must be 120 characters or fewer." };
-  return { amount, description };
+  if (!Number.isFinite(amount) || amount <= 0 || amount > 99999999.99) return { ok: false as const, error: "Enter an amount greater than zero." };
+  if (!description) return { ok: false as const, error: "Enter a short description." };
+  if (description.length > 120) return { ok: false as const, error: "Descriptions must be 120 characters or fewer." };
+  return { ok: true as const, amount, description };
 }
 
 export async function addOutreachIncome(input: { amount: number; description: string }): Promise<{ entry: OutreachIncome | null; error: string | null }> {
@@ -23,7 +23,7 @@ export async function addOutreachIncome(input: { amount: number; description: st
   if (!membership.householdId) return { entry: null, error: "You do not belong to a household." };
   if (!input || typeof input !== "object") return { entry: null, error: "Enter valid income details." };
   const valid = validateEntry(input.amount, input.description);
-  if ("error" in valid) return { entry: null, error: valid.error };
+  if (!valid.ok) return { entry: null, error: valid.error };
 
   const supabase = await createClient();
   const { data, error } = await supabase.from("outreach_income")
@@ -41,7 +41,7 @@ export async function addOutreachSpend(input: { amount: number; description: str
   if (!membership.householdId) return { entry: null, error: "You do not belong to a household." };
   if (!input || typeof input !== "object") return { entry: null, error: "Enter valid spending details." };
   const valid = validateEntry(input.amount, input.description);
-  if ("error" in valid) return { entry: null, error: valid.error };
+  if (!valid.ok) return { entry: null, error: valid.error };
 
   const supabase = await createClient();
   const { data, error } = await supabase.from("outreach_spends")
