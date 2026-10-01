@@ -31,6 +31,7 @@ export async function addOutreachIncome(input: { amount: number; description: st
     .select("id, amount, description, created_at").single();
   if (error || !data) return { entry: null, error: error?.message ?? "Unable to add money." };
   revalidatePath("/outreach");
+  revalidatePath("/totals");
   return { entry: { ...data, amount: Number(data.amount) }, error: null };
 }
 
@@ -49,6 +50,7 @@ export async function addOutreachSpend(input: { amount: number; description: str
     .select("id, amount, description, impact, created_at").single();
   if (error || !data) return { entry: null, error: error?.message ?? "Unable to add spend." };
   revalidatePath("/outreach");
+  revalidatePath("/totals");
   return { entry: { ...data, amount: Number(data.amount) }, error: null };
 }
 

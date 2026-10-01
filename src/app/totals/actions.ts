@@ -69,10 +69,20 @@ export async function recordTotalSnapshot(): Promise<ActionResult<TotalSnapshot>
   const { householdId, error: membershipError } = await getHousehold();
   if (!householdId) return { data: null, error: membershipError };
   const supabase = await createClient();
-  const { data: accounts, error: readError } = await supabase.from("accounts").select("balance, balance_type").eq("household_id", householdId);
-  if (readError) return { data: null, error: readError.message };
+  const [accountsResult, incomeResult, spendsResult] = await Promise.all([
+    supabase.from("accounts").select("balance, balance_type").eq("household_id", householdId),
+    supabase.from("outreach_income").select("amount").eq("household_id", householdId),
+    supabase.from("outreach_spends").select("amount").eq("household_id", householdId),
+  ]);
+  if (accountsResult.error) return { data: null, error: accountsResult.error.message };
+  if (incomeResult.error) return { data: null, error: incomeResult.error.message };
+  if (spendsResult.error) return { data: null, error: spendsResult.error.message };
+  const accounts = accountsResult.data;
   const total = (accounts ?? []).reduce((sum, account) => sum + Number(account.balance) * (account.balance_type === "liability" ? -1 : 1), 0);
-  const { data, error } = await supabase.from("total_snapshots").insert({ household_id: householdId, total }).select("id, total, created_at").single();
+  const outreachAvailable = (incomeResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0)
+    - (spendsResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0);
+  const totalWithOutreach = total - Math.max(0, outreachAvailable);
+  const { data, error } = await supabase.from("total_snapshots").insert({ household_id: householdId, total: totalWithOutreach }).select("id, total, created_at").single();
   if (error || !data) return { data: null, error: error?.message ?? "Unable to record total." };
   revalidatePath("/totals");
   return { data: { ...data, total: Number(data.total) }, error: null };
