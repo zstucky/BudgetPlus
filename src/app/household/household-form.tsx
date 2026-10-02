@@ -7,6 +7,7 @@ import { updateHousehold } from "./actions";
 type HouseholdFormProps = {
   name: string;
   weeklyBudget: number;
+  monthlyIncome: number | null;
 };
 
 type FormState = {
@@ -26,6 +27,7 @@ function SubmitButton() {
 export default function HouseholdForm({
   name,
   weeklyBudget,
+  monthlyIncome,
 }: HouseholdFormProps) {
   const [state, formAction] = useActionState<FormState, FormData>(
     updateHousehold,
@@ -59,6 +61,23 @@ export default function HouseholdForm({
           step="0.01"
           defaultValue={weeklyBudget}
           required
+        />
+      </div>
+
+      <label htmlFor="monthlyIncome">Monthly income (Optional)</label>
+
+      <div className="settings-budget-input">
+        <span aria-hidden="true">$</span>
+
+        <input
+          id="monthlyIncome"
+          name="monthlyIncome"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+          defaultValue={monthlyIncome ?? ""}
         />
       </div>
 

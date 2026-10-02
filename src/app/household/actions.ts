@@ -16,6 +16,8 @@ export async function updateHousehold(
   const weeklyBudget = Number.parseFloat(
     String(formData.get("weeklyBudget") ?? ""),
   );
+  const monthlyIncomeValue = String(formData.get("monthlyIncome") ?? "").trim();
+  const monthlyIncome = monthlyIncomeValue === "" ? null : Number.parseFloat(monthlyIncomeValue);
 
   if (!name) {
     return { error: "Enter a household name." };
@@ -23,6 +25,10 @@ export async function updateHousehold(
 
   if (!Number.isFinite(weeklyBudget) || weeklyBudget <= 0) {
     return { error: "Enter a weekly budget greater than $0." };
+  }
+
+  if (monthlyIncome !== null && (!Number.isFinite(monthlyIncome) || monthlyIncome < 0)) {
+    return { error: "Enter a monthly income of $0 or more, or leave it blank." };
   }
 
   const membership = await getCurrentMembership();
@@ -48,6 +54,7 @@ export async function updateHousehold(
     .update({
       name,
       weekly_budget: weeklyBudget,
+      monthly_income: monthlyIncome,
     })
     .eq("id", membership.householdId);
 

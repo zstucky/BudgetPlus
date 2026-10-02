@@ -33,7 +33,7 @@ export default async function HouseholdPage() {
 
   const { data: household, error: householdError } = await supabase
     .from("households")
-    .select("name, weekly_budget")
+    .select("name, weekly_budget, monthly_income")
     .eq("id", membership.householdId)
     .single();
 
@@ -58,8 +58,12 @@ export default async function HouseholdPage() {
         </header>
         <section className="monthly-bills settings-card" aria-labelledby="household-details-title">
           <div className="monthly-list-heading"><h2 id="household-details-title">Household details</h2></div>
-          <p className="settings-description">Update your household name and weekly budget.</p>
-          <HouseholdForm name={household.name} weeklyBudget={Number(household.weekly_budget)} />
+          <p className="settings-description">Update your household name, weekly budget, and monthly income.</p>
+          <HouseholdForm
+            name={household.name}
+            weeklyBudget={Number(household.weekly_budget)}
+            monthlyIncome={household.monthly_income === null ? null : Number(household.monthly_income)}
+          />
         </section>
         <section className="monthly-bills settings-menu-card" aria-label="More settings">
           <Link href="/cars" className="settings-menu-item">

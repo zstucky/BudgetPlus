@@ -300,7 +300,7 @@ button, input { font: inherit; }
 .household-float-button {
   position: absolute;
   z-index: 21;
-  top: max(75px, env(safe-area-inset-top));
+  top: max(80px, env(safe-area-inset-top));
   right: 16px;
   display: grid;
   width: 48px;
