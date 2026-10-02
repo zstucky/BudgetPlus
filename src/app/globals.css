@@ -690,7 +690,7 @@ button, input { font: inherit; }
 .weekly-heading { margin-bottom: 22px; }
 .weekly-heading h1 { color: var(--accent-color); text-shadow: 0 0 25px color-mix(in srgb, var(--accent-color) 16%, transparent); }
 .weekly-overview {
-  padding: 15px 16px;
+  padding: 14px 14px;
   margin-bottom: 16px;
   border: 1px solid rgba(220,235,227,.24);
   border-radius: 20px;
@@ -699,7 +699,29 @@ button, input { font: inherit; }
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
-.balance-section { min-height: 116px; padding: 0; }
+.weekly-history-card {
+  padding: 15px 15px 13px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(220,235,227,.24);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(223,239,230,.1), rgba(17,29,38,.55) 55%, rgba(94,230,168,.045));
+  box-shadow: inset 0 1px rgba(255,255,255,.12), 0 10px 35px rgba(0,0,0,.13);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.weekly-history-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.weekly-history-heading h2 { margin: 0; color: #f3f7f5; font-size: 1.08rem; letter-spacing: -.02em; }
+.weekly-history-empty { margin: 11px 0 2px; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+.weekly-history-legend { display: flex; justify-content: flex-end; gap: 13px; margin-top: 0; margin-bottom: -4px; color: var(--muted); font-size: .68rem; transform: translateY(-4px); }
+.weekly-history-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.weekly-history-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; }
+.weekly-history-spend-key { background: #5ee6a8; }
+.weekly-history-budget-key { height: 2px !important; border-radius: 0 !important; background: #aab4b1; }
+.weekly-history-plot { height: 160px; margin-top: 0; }
+.weekly-chart-budget-line { fill: none; stroke: #aab4b1; stroke-width: 1.45; stroke-dasharray: 3 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.weekly-chart-dates { padding-top: 7px; }
+.weekly-reset-error { margin: 8px 3px 0; color: #ffaaa4; font-size: .82rem; line-height: 1.4; }
+.balance-section { min-height: 96px; padding: 0; }
 .weekly-balance-label { margin: 0 0 8px; color: var(--muted); font-size: .88rem; font-weight: 700; }
 .balance { margin: 0; color: #f3f7f5; font-size: clamp(2.4rem, 10vw, 3.4rem); }
 .progress-ring { width: 112px; height: 112px; padding: 8px; margin: 0; box-shadow: 0 0 28px rgba(94,230,168,.1); }
@@ -717,12 +739,15 @@ button, input { font: inherit; }
 .expense-form label { margin: 0 2px 9px; font-size: 1.1rem; font-weight: 400; letter-spacing: -.02em; }
 .expense-form .input-row { gap: 9px; margin: 0; }
 .amount-input, .description-input {
+  height: 47px;
   min-height: 47px;
+  box-sizing: border-box;
   border: 2px solid rgba(224,238,234,.3);
   border-radius: 12px;
   background: rgba(7,16,22,.42);
 }
-.expense-form .input-row button { margin: 0; border-radius: 12px; }
+.expense-form .amount-input input { padding-top: 0; padding-bottom: 0; }
+.expense-form .input-row button { min-height: 41px; margin: 0; border-radius: 12px; }
 .amount-input:focus-within, .description-input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 16%, transparent); }
 .expense-summary { padding: 14px; margin-bottom: 14px; }
 .spending-summary { padding: 1px 2px 13px; font-size: 1.1rem; }
@@ -740,12 +765,13 @@ button, input { font: inherit; }
 @media (max-width: 600px) {
   .budget-page { padding: max(75px, env(safe-area-inset-top)) 15px max(120px, calc(env(safe-area-inset-bottom) + 108px)); }
   .budget-card { width: min(100%, 480px); padding: 0 0 24px; }
-  .balance-section { flex-direction: row; align-items: center; gap: 8px; padding: 0; }
-  .progress-ring { width: 100px; height: 100px; padding: 7px; }
+  .balance-section { min-height: 94px; flex-direction: row; align-items: center; gap: 8px; padding: 0; }
+  .progress-ring { width: 94px; height: 94px; padding: 6px; }
 }
 
 @media (max-width: 360px) {
-  .weekly-overview { padding: 13px 12px; }
+  .weekly-overview { padding: 12px; }
+  .balance-section { min-height: 88px; }
   .balance { font-size: 2.25rem; }
   .progress-ring { width: 88px; height: 88px; padding: 6px; }
 }

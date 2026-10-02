@@ -49,6 +49,13 @@ export default async function Home() {
   membership.householdId,
   );
 
+  const { data: weeklyHistory, error: weeklyHistoryError } = await supabase
+    .from("weekly_history")
+    .select("id, amount_spent, budget_amount, reset_at")
+    .eq("household_id", membership.householdId)
+    .order("reset_at", { ascending: false })
+    .limit(8);
+
   console.log("Transactions from Supabase:", transactions);
 
   if (transactions.error) {
@@ -63,11 +70,28 @@ export default async function Home() {
     );
   }
 
+  if (weeklyHistoryError) {
+    return (
+      <main className="auth-page">
+        <section className="auth-card">
+          <p className="auth-brand">Weekly Budget</p>
+          <h1>We couldn&apos;t load your weekly history</h1>
+          <p className="auth-error">{weeklyHistoryError.message}</p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <Dashboard
       householdId={membership.householdId}
       weeklyBudget={Number(household.weekly_budget)}
       initialExpenses={transactions.data}
+      initialHistory={(weeklyHistory ?? []).reverse().map((entry) => ({
+        ...entry,
+        amount_spent: Number(entry.amount_spent),
+        budget_amount: Number(entry.budget_amount),
+      }))}
     />
   );
 }
