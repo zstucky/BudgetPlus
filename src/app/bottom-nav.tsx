@@ -13,10 +13,13 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const showHouseholdButton = pathname !== "/household"
+    && pathname !== "/lessons/history"
+    && pathname !== "/totals/history";
 
   return (
     <>
-      {pathname !== "/household" && <Link href="/household" className="household-float-button" aria-label="Household settings">
+      {showHouseholdButton && <Link href="/household" className="household-float-button" aria-label="Household settings">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="m3.5 10 8.5-7 8.5 7" />
           <path d="M5.5 9v11h13V9M9.5 20v-6h5v6" />
@@ -24,7 +27,7 @@ export default function BottomNav() {
       </Link>}
       <nav className="bottom-nav" aria-label="Budget sections">
         {tabs.map((tab) => {
-          const active = pathname === tab.href;
+          const active = pathname === tab.href || (tab.href !== "/" && pathname.startsWith(`${tab.href}/`));
 
           return (
             <Link

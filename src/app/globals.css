@@ -617,6 +617,13 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-chart-dates { display: grid; grid-template-columns: 65px minmax(0,1fr); padding: 7px 3px 0 0; color: var(--muted); font-size: .7rem; }
 .totals-chart-date-axis { display: flex; justify-content: space-between; padding-left: 0.5%; }
 .lessons-content { padding-bottom: 16px; }
+.lessons-history-content { padding-bottom: 20px; }
+.lessons-history-month + .lessons-history-month { margin-top: 14px; }
+.lessons-history-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; padding: 0 2px 13px; }
+.lessons-history-totals > span { display: grid; gap: 3px; color: var(--muted); font-size: .67rem; }
+.lessons-history-totals strong { overflow: hidden; color: #a8f5cc; font-size: .82rem; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
+.lessons-history-totals .lessons-expense-amount { color: #ffaaa4; }
+.lessons-history-month li { grid-template-columns: minmax(0, 1fr) auto; }
 .lessons-chart-card { margin-bottom: 14px; }
 .lessons-chart-card .calendar-heading { padding-bottom: 12px; }
 .lessons-chart-card h2 { margin: 0; color: #f3f7f5; font-size: 1.25rem; letter-spacing: -.035em; }

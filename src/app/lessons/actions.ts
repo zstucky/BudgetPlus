@@ -39,6 +39,7 @@ export async function addLesson(input: { amount: number; lessonDate: string; des
     .single();
   if (error || !data) return { lesson: null, error: error?.message ?? "Unable to add lesson." };
   revalidatePath("/lessons");
+  revalidatePath("/lessons/history");
   return { lesson: { id: data.id, amount: Number(data.amount), lesson_date: data.lesson_date, description: data.description?.trim() || "Lesson", type: data.type === "expense" ? "expense" : "income" }, error: null };
 }
 
@@ -53,5 +54,6 @@ export async function deleteLesson(lessonId: string): Promise<{ error: string | 
   const { error } = await supabase.from("lessons").delete().eq("id", lessonId).eq("household_id", membership.householdId);
   if (error) return { error: error.message };
   revalidatePath("/lessons");
+  revalidatePath("/lessons/history");
   return { error: null };
 }

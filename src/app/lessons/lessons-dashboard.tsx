@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { addLesson, deleteLesson } from "./actions";
 
 export type Lesson = { id: string; amount: number; lesson_date: string; description: string; type: "income" | "expense" };
@@ -93,7 +94,7 @@ export default function LessonsDashboard({
       <section className="monthly-calendar totals-chart-card lessons-chart-card" aria-labelledby="lessons-chart-title">
         <div className="calendar-heading">
           <div><p className="totals-kicker">Lessons - This Month</p><h2 id="lessons-chart-title">{money(currentTotal)}</h2></div>
-          <span className="totals-chart-label">By month</span>
+          <Link href="/lessons/history" className="totals-chart-label">By month</Link>
         </div>
         <div className="lessons-chart" role="img" aria-label={`Net lesson income for the last six months: ${months.map((month) => `${month.label} ${money(month.net)} net, ${money(month.income)} income, ${money(month.expense)} expenses`).join("; ")}`}>
           {months.map((month) => {
