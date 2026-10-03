@@ -21,10 +21,12 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
     year: "numeric",
   });
   const totalsByDay = new Map<number, number>();
+  const manualBillDays = new Set<number>();
   const remindersByDay = new Map<number, MonthlyReminder[]>();
 
   for (const bill of bills) {
     totalsByDay.set(bill.due_day, (totalsByDay.get(bill.due_day) ?? 0) + bill.amount);
+    if (!bill.is_autopay) manualBillDays.add(bill.due_day);
   }
 
   for (const reminder of reminders) {
@@ -71,10 +73,12 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
         {Array.from({ length: daysInMonth }, (_, index) => {
           const day = index + 1;
           const dueAmount = totalsByDay.get(day) ?? 0;
+          const hasManualBill = manualBillDays.has(day);
+          const hasAutopayOnly = dueAmount > 0 && !hasManualBill;
           const dayReminders = remindersByDay.get(day) ?? [];
           const isToday = isCurrentMonth && today.getDate() === day;
           const accessibleParts = [
-            dueAmount > 0 ? `$${dueAmount.toFixed(2)} in bills due` : "no bills due",
+            dueAmount > 0 ? `$${dueAmount.toFixed(2)} in ${hasManualBill ? "bills due" : "autopay bills"}` : "no bills due",
             ...(dayReminders.length ? ["monthly reminder due"] : []),
           ];
           const accessibleLabel = `${monthLabel} ${day}: ${accessibleParts.join(", ")}`;
@@ -82,7 +86,7 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
           return (
             <button
               type="button"
-              className={`calendar-day${isToday ? " calendar-day-today" : ""}${dueAmount > 0 ? " calendar-day-due" : ""}${dayReminders.length > 0 ? " calendar-day-reminder" : ""}`}
+              className={`calendar-day${isToday ? " calendar-day-today" : ""}${hasManualBill ? " calendar-day-due" : ""}${hasAutopayOnly ? " calendar-day-autopay" : ""}${dayReminders.length > 0 ? " calendar-day-reminder" : ""}`}
               role="gridcell"
               aria-label={accessibleLabel}
               aria-pressed={selectedDay === day}
@@ -91,7 +95,7 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
               key={day}
             >
               <span className="calendar-date">{day}</span>
-              {dueAmount > 0 && <span className="calendar-due-amount">${dueAmount.toFixed(2)}</span>}
+              {dueAmount > 0 && <span className={`calendar-due-amount${hasAutopayOnly ? " calendar-due-amount-autopay" : ""}`}>${dueAmount.toFixed(2)}</span>}
             </button>
           );
         })}

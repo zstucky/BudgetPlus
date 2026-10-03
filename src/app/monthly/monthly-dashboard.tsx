@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { addMonthlyReminder, addRecurringBill, deleteMonthlyReminder, deleteRecurringBill } from "./actions";
+import { addMonthlyReminder, addRecurringBill, deleteMonthlyReminder, deleteRecurringBill, setRecurringBillAutopay } from "./actions";
 import MonthlyCalendar from "./monthly-calendar";
 
 export type RecurringBill = {
@@ -9,6 +9,7 @@ export type RecurringBill = {
   name: string;
   amount: number;
   due_day: number;
+  is_autopay: boolean;
 };
 
 export type MonthlyReminder = {
@@ -26,6 +27,8 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [billActionError, setBillActionError] = useState<string | null>(null);
+  const [togglingBillId, setTogglingBillId] = useState<string | null>(null);
   const [reminderDescription, setReminderDescription] = useState("");
   const [reminderDay, setReminderDay] = useState("1");
   const [reminderError, setReminderError] = useState<string | null>(null);
@@ -53,17 +56,32 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
   }
 
   async function handleDelete(billId: string) {
-    setError(null);
+    setBillActionError(null);
     setDeletingId(billId);
     try {
       const result = await deleteRecurringBill(billId);
       if (result.error) {
-        setError(result.error);
+        setBillActionError(result.error);
         return;
       }
       setBills((current) => current.filter((bill) => bill.id !== billId));
     } finally {
       setDeletingId(null);
+    }
+  }
+
+  async function handleToggleAutopay(bill: RecurringBill) {
+    setBillActionError(null);
+    setTogglingBillId(bill.id);
+    try {
+      const result = await setRecurringBillAutopay(bill.id, !bill.is_autopay);
+      if (result.error || result.isAutopay === null) {
+        setBillActionError(result.error ?? "Unable to update autopay.");
+        return;
+      }
+      setBills((current) => current.map((entry) => entry.id === bill.id ? { ...entry, is_autopay: result.isAutopay! } : entry));
+    } finally {
+      setTogglingBillId(null);
     }
   }
 
@@ -123,11 +141,20 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
           <ul>
             {bills.map((bill) => (
               <li key={bill.id}>
-                <div className="bill-details">
-                  <strong>{bill.name}</strong>
-                  <span>Due on day {bill.due_day}</span>
-                </div>
-                <strong className="bill-amount">${bill.amount.toFixed(2)}</strong>
+                <button
+                  type="button"
+                  className="bill-autopay-toggle"
+                  aria-label={`${bill.name}, due on day ${bill.due_day}, autopay ${bill.is_autopay ? "on" : "off"}. Toggle autopay.`}
+                  aria-pressed={bill.is_autopay}
+                  disabled={togglingBillId === bill.id || deletingId === bill.id}
+                  onClick={() => handleToggleAutopay(bill)}
+                >
+                  <span className="bill-details">
+                    <strong>{bill.name}</strong>
+                    <span>Due on day {bill.due_day} · Autopay {bill.is_autopay ? "On" : "Off"}</span>
+                  </span>
+                  <strong className="bill-amount">${bill.amount.toFixed(2)}</strong>
+                </button>
                 <button
                   type="button"
                   className="bill-delete"
@@ -141,6 +168,7 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
             ))}
           </ul>
         )}
+        {billActionError && <p className="monthly-error" role="alert">{billActionError}</p>}
       </section>
 
       <form className="monthly-form" onSubmit={handleSubmit}>

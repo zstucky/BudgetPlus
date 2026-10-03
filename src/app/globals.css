@@ -401,6 +401,8 @@ h1, h2, h3, button { text-transform: capitalize; }
 .calendar-day-due { border-color: rgba(255,115,105,.42); background: rgba(255,98,87,.12); box-shadow: inset 0 0 14px rgba(255,98,87,.06); }
 .calendar-day-due .calendar-date { color: #ffd0ca; font-weight: 700; }
 .calendar-due-amount { max-width: 100%; overflow: hidden; color: #ffaaa2; font-size: clamp(.48rem, 2.2vw, .68rem); font-weight: 800; line-height: 1; text-overflow: clip; white-space: nowrap; }
+.calendar-day-autopay { border-color: rgba(174,185,181,.35); background: rgba(156,170,165,.11); box-shadow: inset 0 0 14px rgba(174,185,181,.05); }
+.calendar-day-autopay .calendar-date, .calendar-due-amount-autopay { color: #b9c3bf; }
 .calendar-day-reminder { border-color: rgba(255,172,102,.56); background: rgba(245,145,63,.12); box-shadow: inset 0 0 14px rgba(245,145,63,.06); }
 .calendar-day-reminder .calendar-date { color: #ffc184; font-weight: 700; }
 .calendar-day-today { box-shadow: inset 0 0 0 1px rgba(239,250,246,.52); }
@@ -466,6 +468,12 @@ h1, h2, h3, button { text-transform: capitalize; }
 .monthly-bills ul { margin: 0; padding: 0; list-style: none; overflow: hidden; border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
 .monthly-bills li { display: grid; grid-template-columns: minmax(0, 1fr) auto 30px; align-items: center; gap: 10px; min-height: 65px; padding: 10px 11px 10px 14px; }
 .monthly-bills li + li { border-top: 1px solid rgba(220,235,227,.13); }
+.bill-autopay-toggle { display: flex; grid-column: 1 / 3; min-width: 0; align-items: center; justify-content: space-between; gap: 10px; padding: 0; border: 0; border-radius: 8px; color: inherit; background: transparent; text-align: left; cursor: pointer; }
+.bill-autopay-toggle:hover .bill-details strong { color: #a8f5cc; }
+.bill-autopay-toggle:focus-visible { outline: 2px solid #a8f5cc; outline-offset: 3px; }
+.bill-autopay-toggle[aria-pressed="true"] .bill-details > span { color: #b9c3bf; }
+.bill-autopay-toggle[aria-pressed="false"] .bill-details > span { color: #ffaaa4; }
+.bill-autopay-toggle:disabled { cursor: wait; opacity: .65; }
 .bill-details { display: grid; gap: 4px; min-width: 0; }
 .bill-details strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .96rem; }
 .bill-details span { color: var(--muted); font-size: .8rem; }

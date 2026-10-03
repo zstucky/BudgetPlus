@@ -7,6 +7,31 @@ import { getCurrentMembership } from "@/lib/households";
 type BillInput = { name: string; amount: number; dueDay: number };
 type ReminderInput = { description: string; reminderDay: number };
 
+export async function setRecurringBillAutopay(billId: string, isAutopay: boolean): Promise<{
+  isAutopay: boolean | null;
+  error: string | null;
+}> {
+  const membership = await getCurrentMembership();
+  if (!membership.userId) return { isAutopay: null, error: "You must be logged in." };
+  if (membership.error) return { isAutopay: null, error: membership.error };
+  if (!membership.householdId) return { isAutopay: null, error: "You do not belong to a household." };
+  if (typeof billId !== "string" || !/^[0-9a-f-]{36}$/i.test(billId)) return { isAutopay: null, error: "Invalid recurring bill." };
+  if (typeof isAutopay !== "boolean") return { isAutopay: null, error: "Choose an autopay setting." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("recurring_bills")
+    .update({ is_autopay: isAutopay })
+    .eq("id", billId)
+    .eq("household_id", membership.householdId)
+    .select("is_autopay")
+    .single();
+
+  if (error || !data) return { isAutopay: null, error: error?.message ?? "Unable to update autopay." };
+  revalidatePath("/monthly");
+  return { isAutopay: data.is_autopay, error: null };
+}
+
 export async function addMonthlyReminder(input: ReminderInput): Promise<{
   reminder: { id: string; description: string; reminder_date: string } | null;
   error: string | null;
@@ -58,7 +83,7 @@ export async function deleteMonthlyReminder(reminderId: string): Promise<{ error
 }
 
 export async function addRecurringBill(input: BillInput): Promise<{
-  bill: { id: string; name: string; amount: number; due_day: number } | null;
+  bill: { id: string; name: string; amount: number; due_day: number; is_autopay: boolean } | null;
   error: string | null;
 }> {
   const membership = await getCurrentMembership();
@@ -84,8 +109,8 @@ export async function addRecurringBill(input: BillInput): Promise<{
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("recurring_bills")
-    .insert({ household_id: membership.householdId, name, amount, due_day: dueDay })
-    .select("id, name, amount, due_day")
+    .insert({ household_id: membership.householdId, name, amount, due_day: dueDay, is_autopay: false })
+    .select("id, name, amount, due_day, is_autopay")
     .single();
 
   if (error || !data) {
@@ -93,7 +118,7 @@ export async function addRecurringBill(input: BillInput): Promise<{
   }
   revalidatePath("/monthly");
   return {
-    bill: { id: data.id, name: data.name, amount: Number(data.amount), due_day: data.due_day },
+    bill: { id: data.id, name: data.name, amount: Number(data.amount), due_day: data.due_day, is_autopay: data.is_autopay },
     error: null,
   };
 }

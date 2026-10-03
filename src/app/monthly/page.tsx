@@ -14,7 +14,7 @@ export default async function MonthlyPage() {
   const [{ data, error }, { data: reminderData, error: reminderError }] = await Promise.all([
     supabase
       .from("recurring_bills")
-      .select("id, name, amount, due_day")
+      .select("id, name, amount, due_day, is_autopay")
       .eq("household_id", membership.householdId)
       .order("due_day", { ascending: true }),
     supabase
@@ -31,6 +31,7 @@ export default async function MonthlyPage() {
     name: bill.name,
     amount: Number(bill.amount),
     due_day: bill.due_day,
+    is_autopay: bill.is_autopay,
   }));
   const reminders: MonthlyReminder[] = (reminderData ?? []).map((reminder) => ({
     id: reminder.id,
