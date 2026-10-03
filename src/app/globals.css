@@ -392,8 +392,11 @@ h1, h2, h3, button { text-transform: capitalize; }
 .calendar-controls button:hover { border-color: rgba(94,230,168,.5); background: rgba(94,230,168,.1); }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .calendar-weekday { padding: 3px 0 5px; color: var(--muted); font-size: .68rem; font-weight: 700; text-align: center; }
-.calendar-day { display: flex; min-width: 0; min-height: 49px; flex-direction: column; align-items: center; gap: 5px; padding: 5px 1px 4px; border: 1px solid transparent; border-radius: 10px; background: rgba(5,14,19,.19); }
+.calendar-day { display: flex; width: 100%; min-width: 0; min-height: 49px; flex-direction: column; align-items: center; justify-content: flex-start; gap: 5px; padding: 5px 1px 4px; border: 1px solid transparent; border-radius: 10px; color: inherit; background: rgba(5,14,19,.19); font: inherit; text-align: center; appearance: none; cursor: pointer; }
 .calendar-day-empty { background: transparent; }
+.calendar-day:not(.calendar-day-empty):hover { border-color: rgba(164,245,204,.56); background-color: rgba(94,230,168,.1); }
+.calendar-day:focus-visible { outline: 2px solid #a8f5cc; outline-offset: 1px; }
+.calendar-day[aria-pressed="true"] { box-shadow: inset 0 0 0 1px rgba(239,250,246,.7); }
 .calendar-date { color: rgba(239,246,243,.82); font-size: .76rem; line-height: 1; }
 .calendar-day-due { border-color: rgba(255,115,105,.42); background: rgba(255,98,87,.12); box-shadow: inset 0 0 14px rgba(255,98,87,.06); }
 .calendar-day-due .calendar-date { color: #ffd0ca; font-weight: 700; }
@@ -401,6 +404,20 @@ h1, h2, h3, button { text-transform: capitalize; }
 .calendar-day-reminder { border-color: rgba(255,172,102,.56); background: rgba(245,145,63,.12); box-shadow: inset 0 0 14px rgba(245,145,63,.06); }
 .calendar-day-reminder .calendar-date { color: #ffc184; font-weight: 700; }
 .calendar-day-today { box-shadow: inset 0 0 0 1px rgba(239,250,246,.52); }
+.monthly-day-details { padding: 12px; margin-top: 12px; border: 1px solid rgba(220,235,227,.19); border-radius: 14px; background: rgba(6,14,20,.3); }
+.monthly-day-details > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.monthly-day-details > header h3 { margin: 0; color: #f3f7f5; font-size: .94rem; letter-spacing: -.02em; }
+.monthly-day-details > header button { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; border: 1px solid rgba(220,235,227,.17); border-radius: 8px; color: var(--muted); background: rgba(255,255,255,.045); font-size: 1.2rem; line-height: 1; cursor: pointer; }
+.monthly-day-details-list { display: grid; gap: 11px; margin-top: 10px; }
+.monthly-day-details-group { display: grid; gap: 6px; }
+.monthly-day-details-group h4 { margin: 0; color: #a8f5cc; font-size: .76rem; }
+.monthly-day-details-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; color: #e4eee9; font-size: .82rem; }
+.monthly-day-details-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.monthly-day-details-row strong { flex: 0 0 auto; color: #f6f7eb; font-variant-numeric: tabular-nums; }
+.monthly-day-reminders h4 { color: #ffb875; }
+.monthly-day-reminders .monthly-day-details-row { color: #ffc184; }
+.monthly-day-reminder-badge { flex: 0 0 auto; color: #ffb875; font-size: .72rem; }
+.monthly-day-details-empty { margin: 9px 0 0; color: var(--muted); font-size: .82rem; }
 .monthly-form { display: grid; gap: 8px; padding: 14px 15px; margin-top: 14px; }
 .monthly-form h2, .monthly-list-heading h2 { margin: 0; font-size: 1.1rem; letter-spacing: -.02em; }
 .monthly-form label { font-size: .8rem; font-weight: 700; }
@@ -441,6 +458,7 @@ h1, h2, h3, button { text-transform: capitalize; }
 .monthly-form button[type="submit"]:disabled { cursor: wait; opacity: .68; }
 .monthly-error { margin: 3px 0 0; color: #ffaaa4; font-size: .88rem; line-height: 1.45; }
 .monthly-bills { padding: 16px; }
+.monthly-reminders-list { margin-top: 14px; }
 .monthly-list-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 12px; }
 .monthly-list-heading > span { display: grid; min-width: 27px; height: 27px; place-items: center; padding: 0 7px; border-radius: 99px; color: #d9ffea; background: rgba(94,230,168,.13); font-size: .8rem; font-weight: 800; }
 .monthly-total-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 2px 13px; color: var(--muted); font-size: .88rem; }

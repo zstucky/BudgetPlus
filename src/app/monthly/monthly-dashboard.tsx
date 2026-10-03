@@ -143,40 +143,6 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
         )}
       </section>
 
-      <section className="monthly-bills monthly-reminders-list" aria-labelledby="reminders-title">
-        <div className="monthly-list-heading">
-          <h2 id="reminders-title">Reminders</h2>
-          <span>{reminders.length}</span>
-        </div>
-        {reminders.length === 0 ? (
-          <p className="monthly-empty">Your monthly reminders will appear here.</p>
-        ) : (
-          <ul>
-            {reminders.map((reminder) => {
-              const dueDay = Number(reminder.reminder_date.slice(-2));
-              return (
-                <li key={reminder.id}>
-                  <div className="bill-details">
-                    <strong>{reminder.description}</strong>
-                    <span>Due on day {dueDay}</span>
-                  </div>
-                  <span className="monthly-reminder-indicator" aria-hidden="true" />
-                  <button
-                    type="button"
-                    className="bill-delete"
-                    aria-label={`Delete ${reminder.description}`}
-                    disabled={deletingReminderId === reminder.id}
-                    onClick={() => handleDeleteReminder(reminder.id)}
-                  >
-                    {deletingReminderId === reminder.id ? "…" : "×"}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-
       <form className="monthly-form" onSubmit={handleSubmit}>
         <h2>Add an expense</h2>
         <div className="monthly-form-fields">
@@ -221,6 +187,40 @@ export default function MonthlyDashboard({ initialBills, initialReminders }: { i
         <button type="submit" disabled={isSaving}>{isSaving ? "Adding..." : "Add expense"}</button>
         {error && <p className="monthly-error" role="alert">{error}</p>}
       </form>
+
+      <section className="monthly-bills monthly-reminders-list" aria-labelledby="reminders-title">
+        <div className="monthly-list-heading">
+          <h2 id="reminders-title">Reminders</h2>
+          <span>{reminders.length}</span>
+        </div>
+        {reminders.length === 0 ? (
+          <p className="monthly-empty">Your monthly reminders will appear here.</p>
+        ) : (
+          <ul>
+            {reminders.map((reminder) => {
+              const dueDay = Number(reminder.reminder_date.slice(-2));
+              return (
+                <li key={reminder.id}>
+                  <div className="bill-details">
+                    <strong>{reminder.description}</strong>
+                    <span>Due on day {dueDay}</span>
+                  </div>
+                  <span className="monthly-reminder-indicator" aria-hidden="true" />
+                  <button
+                    type="button"
+                    className="bill-delete"
+                    aria-label={`Delete ${reminder.description}`}
+                    disabled={deletingReminderId === reminder.id}
+                    onClick={() => handleDeleteReminder(reminder.id)}
+                  >
+                    {deletingReminderId === reminder.id ? "…" : "×"}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <form className="monthly-form monthly-reminder-form" onSubmit={handleAddReminder}>
         <h2>Add a reminder</h2>

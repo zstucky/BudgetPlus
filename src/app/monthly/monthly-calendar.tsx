@@ -10,6 +10,7 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
   });
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const firstWeekday = new Date(viewedMonth.year, viewedMonth.month, 1).getDay();
   const daysInMonth = new Date(viewedMonth.year, viewedMonth.month + 1, 0).getDate();
@@ -34,11 +35,22 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
   }
 
   function changeMonth(amount: number) {
+    setSelectedDay(null);
     setViewedMonth((current) => {
       const next = new Date(current.year, current.month + amount, 1);
       return { year: next.getFullYear(), month: next.getMonth() };
     });
   }
+
+  const selectedBills = selectedDay === null ? [] : bills.filter((bill) => bill.due_day === selectedDay);
+  const selectedReminders = selectedDay === null ? [] : remindersByDay.get(selectedDay) ?? [];
+  const selectedDate = selectedDay === null ? null : new Date(viewedMonth.year, viewedMonth.month, selectedDay);
+  const selectedDateLabel = selectedDate?.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <section className="monthly-calendar" aria-label="Monthly bills and reminders calendar">
@@ -68,18 +80,58 @@ export default function MonthlyCalendar({ bills, reminders }: { bills: Recurring
           const accessibleLabel = `${monthLabel} ${day}: ${accessibleParts.join(", ")}`;
 
           return (
-            <div
+            <button
+              type="button"
               className={`calendar-day${isToday ? " calendar-day-today" : ""}${dueAmount > 0 ? " calendar-day-due" : ""}${dayReminders.length > 0 ? " calendar-day-reminder" : ""}`}
               role="gridcell"
               aria-label={accessibleLabel}
+              aria-pressed={selectedDay === day}
+              aria-controls={selectedDay === day ? "calendar-day-details" : undefined}
+              onClick={() => setSelectedDay(day)}
               key={day}
             >
               <span className="calendar-date">{day}</span>
               {dueAmount > 0 && <span className="calendar-due-amount">${dueAmount.toFixed(2)}</span>}
-            </div>
+            </button>
           );
         })}
       </div>
+      {selectedDay !== null && selectedDateLabel && (
+        <section className="monthly-day-details" id="calendar-day-details" aria-labelledby="calendar-day-title" aria-live="polite">
+          <header>
+            <h3 id="calendar-day-title">{selectedDateLabel}</h3>
+            <button type="button" aria-label="Close day details" onClick={() => setSelectedDay(null)}>×</button>
+          </header>
+          {selectedBills.length === 0 && selectedReminders.length === 0 ? (
+            <p className="monthly-day-details-empty">No bills or reminders on this day.</p>
+          ) : (
+            <div className="monthly-day-details-list">
+              {selectedBills.length > 0 && (
+                <div className="monthly-day-details-group">
+                  <h4>Bills</h4>
+                  {selectedBills.map((bill) => (
+                    <div className="monthly-day-details-row" key={bill.id}>
+                      <span>{bill.name}</span>
+                      <strong>${bill.amount.toFixed(2)}</strong>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedReminders.length > 0 && (
+                <div className="monthly-day-details-group monthly-day-reminders">
+                  <h4>Reminders</h4>
+                  {selectedReminders.map((reminder) => (
+                    <div className="monthly-day-details-row" key={reminder.id}>
+                      <span>{reminder.description}</span>
+                      <span className="monthly-day-reminder-badge">Reminder</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
     </section>
   );
 }
