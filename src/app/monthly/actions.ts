@@ -5,6 +5,57 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 
 type BillInput = { name: string; amount: number; dueDay: number };
+type ReminderInput = { description: string; reminderDay: number };
+
+export async function addMonthlyReminder(input: ReminderInput): Promise<{
+  reminder: { id: string; description: string; reminder_date: string } | null;
+  error: string | null;
+}> {
+  const membership = await getCurrentMembership();
+  if (!membership.userId) return { reminder: null, error: "You must be logged in." };
+  if (membership.error) return { reminder: null, error: membership.error };
+  if (!membership.householdId) return { reminder: null, error: "You do not belong to a household." };
+  if (!input || typeof input !== "object") return { reminder: null, error: "Enter valid reminder details." };
+
+  const description = typeof input.description === "string" ? input.description.trim() : "";
+  const reminderDay = Number(input.reminderDay);
+  if (!description) return { reminder: null, error: "Enter a reminder description." };
+  if (description.length > 120) return { reminder: null, error: "Reminder descriptions must be 120 characters or fewer." };
+  if (!Number.isInteger(reminderDay) || reminderDay < 1 || reminderDay > 31) return { reminder: null, error: "Choose a due day from 1 to 31." };
+
+  // The existing column is a DATE; store the recurring day in a fixed January date.
+  const reminderDate = `2000-01-${String(reminderDay).padStart(2, "0")}`;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("monthly_reminders")
+    .insert({ household_id: membership.householdId, description, reminder_date: reminderDate })
+    .select("id, description, reminder_date")
+    .single();
+
+  if (error || !data) return { reminder: null, error: error?.message ?? "Unable to add reminder." };
+  revalidatePath("/monthly");
+  return { reminder: data, error: null };
+}
+
+export async function deleteMonthlyReminder(reminderId: string): Promise<{ error: string | null }> {
+  const membership = await getCurrentMembership();
+  if (!membership.userId) return { error: "You must be logged in." };
+  if (membership.error) return { error: membership.error };
+  if (!membership.householdId) return { error: "You do not belong to a household." };
+  if (typeof reminderId !== "string" || !/^[0-9a-f-]{36}$/i.test(reminderId)) return { error: "Invalid reminder." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("monthly_reminders")
+    .delete()
+    .eq("id", reminderId)
+    .eq("household_id", membership.householdId);
+
+  if (error) return { error: error.message };
+  revalidatePath("/monthly");
+  return { error: null };
+}
 
 export async function addRecurringBill(input: BillInput): Promise<{
   bill: { id: string; name: string; amount: number; due_day: number } | null;

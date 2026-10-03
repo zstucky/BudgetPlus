@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { RecurringBill } from "./monthly-dashboard";
+import type { MonthlyReminder, RecurringBill } from "./monthly-dashboard";
 
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function MonthlyCalendar({ bills }: { bills: RecurringBill[] }) {
+export default function MonthlyCalendar({ bills, reminders }: { bills: RecurringBill[]; reminders: MonthlyReminder[] }) {
   const [viewedMonth, setViewedMonth] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -20,9 +20,17 @@ export default function MonthlyCalendar({ bills }: { bills: RecurringBill[] }) {
     year: "numeric",
   });
   const totalsByDay = new Map<number, number>();
+  const remindersByDay = new Map<number, MonthlyReminder[]>();
 
   for (const bill of bills) {
     totalsByDay.set(bill.due_day, (totalsByDay.get(bill.due_day) ?? 0) + bill.amount);
+  }
+
+  for (const reminder of reminders) {
+    const day = Number(reminder.reminder_date.slice(-2));
+    const dayReminders = remindersByDay.get(day) ?? [];
+    dayReminders.push(reminder);
+    remindersByDay.set(day, dayReminders);
   }
 
   function changeMonth(amount: number) {
@@ -33,7 +41,7 @@ export default function MonthlyCalendar({ bills }: { bills: RecurringBill[] }) {
   }
 
   return (
-    <section className="monthly-calendar" aria-label="Monthly bill calendar">
+    <section className="monthly-calendar" aria-label="Monthly bills and reminders calendar">
       <header className="calendar-heading">
         <h2>{monthLabel}</h2>
         <div className="calendar-controls">
@@ -51,14 +59,17 @@ export default function MonthlyCalendar({ bills }: { bills: RecurringBill[] }) {
         {Array.from({ length: daysInMonth }, (_, index) => {
           const day = index + 1;
           const dueAmount = totalsByDay.get(day) ?? 0;
+          const dayReminders = remindersByDay.get(day) ?? [];
           const isToday = isCurrentMonth && today.getDate() === day;
-          const accessibleLabel = dueAmount > 0
-            ? `${monthLabel} ${day}: $${dueAmount.toFixed(2)} due`
-            : `${monthLabel} ${day}: no bills due`;
+          const accessibleParts = [
+            dueAmount > 0 ? `$${dueAmount.toFixed(2)} in bills due` : "no bills due",
+            ...(dayReminders.length ? ["monthly reminder due"] : []),
+          ];
+          const accessibleLabel = `${monthLabel} ${day}: ${accessibleParts.join(", ")}`;
 
           return (
             <div
-              className={`calendar-day${isToday ? " calendar-day-today" : ""}${dueAmount > 0 ? " calendar-day-due" : ""}`}
+              className={`calendar-day${isToday ? " calendar-day-today" : ""}${dueAmount > 0 ? " calendar-day-due" : ""}${dayReminders.length > 0 ? " calendar-day-reminder" : ""}`}
               role="gridcell"
               aria-label={accessibleLabel}
               key={day}

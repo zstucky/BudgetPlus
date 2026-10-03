@@ -398,6 +398,8 @@ h1, h2, h3, button { text-transform: capitalize; }
 .calendar-day-due { border-color: rgba(255,115,105,.42); background: rgba(255,98,87,.12); box-shadow: inset 0 0 14px rgba(255,98,87,.06); }
 .calendar-day-due .calendar-date { color: #ffd0ca; font-weight: 700; }
 .calendar-due-amount { max-width: 100%; overflow: hidden; color: #ffaaa2; font-size: clamp(.48rem, 2.2vw, .68rem); font-weight: 800; line-height: 1; text-overflow: clip; white-space: nowrap; }
+.calendar-day-reminder { border-color: rgba(255,172,102,.56); background: rgba(245,145,63,.12); box-shadow: inset 0 0 14px rgba(245,145,63,.06); }
+.calendar-day-reminder .calendar-date { color: #ffc184; font-weight: 700; }
 .calendar-day-today { box-shadow: inset 0 0 0 1px rgba(239,250,246,.52); }
 .monthly-form { display: grid; gap: 8px; padding: 14px 15px; margin-top: 14px; }
 .monthly-form h2, .monthly-list-heading h2 { margin: 0; font-size: 1.1rem; letter-spacing: -.02em; }
@@ -412,6 +414,14 @@ h1, h2, h3, button { text-transform: capitalize; }
 .monthly-form-fields > div:first-child > input { font: inherit; }
 .monthly-form input::placeholder { color: #829099; }
 .monthly-form-fields > div:first-child > input:focus, .monthly-form select:focus, .monthly-amount-input:focus-within { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.monthly-reminder-fields { display: grid; grid-template-columns: minmax(0, 1fr) 86px; gap: 9px; }
+.monthly-reminder-fields > div { display: grid; align-content: start; gap: 5px; min-width: 0; }
+.monthly-reminder-fields input { width: 100%; min-width: 0; min-height: 47px; padding: 0 12px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); background: rgba(7,16,22,.42); font: inherit; color-scheme: dark; }
+.monthly-reminder-fields input:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.monthly-reminder-fields input::placeholder { color: #829099; }
+.monthly-reminder-form button[type="submit"] { min-height: 41px; margin-top: 5px; border: 1px solid rgba(164,245,204,.58); border-radius: 11px; color: #092015; background: linear-gradient(100deg, #a8f5cc, #5ee6a8); font-weight: 800; cursor: pointer; }
+.monthly-reminder-form button[type="submit"]:disabled { cursor: wait; opacity: .68; }
+.monthly-reminder-indicator { width: 10px; height: 10px; border: 1px solid rgba(255,172,102,.7); border-radius: 50%; background: rgba(245,145,63,.6); }
 .monthly-form select {
   appearance: none;
   -webkit-appearance: none;
