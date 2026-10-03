@@ -12,27 +12,42 @@ export default async function TotalsPage() {
   if (!membership.householdId) redirect("/setup-household");
 
   const supabase = await createClient();
-  const [accountsResult, snapshotsResult, outreachIncomeResult, outreachSpendsResult] = await Promise.all([
+  const [accountsResult, snapshotsResult, outreachIncomeResult, outreachSpendsResult, householdResult, billsResult] = await Promise.all([
     supabase.from("accounts").select("id, name, balance, balance_type").eq("household_id", membership.householdId).order("created_at", { ascending: true }),
     supabase.from("total_snapshots").select("id, total, created_at").eq("household_id", membership.householdId).order("created_at", { ascending: false }).limit(15),
     supabase.from("outreach_income").select("amount").eq("household_id", membership.householdId),
     supabase.from("outreach_spends").select("amount").eq("household_id", membership.householdId),
+    supabase.from("households").select("monthly_income, weekly_budget").eq("id", membership.householdId).single(),
+    supabase.from("recurring_bills").select("amount").eq("household_id", membership.householdId),
   ]);
   if (accountsResult.error) return <TotalsLoadError message={accountsResult.error.message} />;
   if (snapshotsResult.error) return <TotalsLoadError message={snapshotsResult.error.message} />;
   if (outreachIncomeResult.error) return <TotalsLoadError message={outreachIncomeResult.error.message} />;
   if (outreachSpendsResult.error) return <TotalsLoadError message={outreachSpendsResult.error.message} />;
+  if (householdResult.error || !householdResult.data) return <TotalsLoadError message={householdResult.error?.message ?? "Household not found."} />;
+  if (billsResult.error) return <TotalsLoadError message={billsResult.error.message} />;
 
   const accounts: Account[] = (accountsResult.data ?? []).map((account) => ({ ...account, balance: Number(account.balance) }));
   const snapshots: TotalSnapshot[] = (snapshotsResult.data ?? []).map((snapshot) => ({ ...snapshot, total: Number(snapshot.total) })).reverse();
   const outreachAvailable = (outreachIncomeResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0)
     - (outreachSpendsResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0);
   const outreachLiability = Math.max(0, outreachAvailable);
+  const monthlyProjection = householdResult.data.monthly_income === null
+    ? null
+    : Number(householdResult.data.monthly_income)
+      - (billsResult.data ?? []).reduce((sum, bill) => sum + Number(bill.amount), 0)
+      - Number(householdResult.data.weekly_budget) * 4.3;
 
   return (
     <main className="monthly-page">
       <BottomNav />
-      <TotalsDashboard initialAccounts={accounts} initialSnapshots={snapshots} outreachLiability={outreachLiability} />
+      <TotalsDashboard
+        initialAccounts={accounts}
+        initialSnapshots={snapshots}
+        outreachLiability={outreachLiability}
+        monthlyProjection={monthlyProjection}
+        forecastStartDate={new Date().toISOString()}
+      />
     </main>
   );
 }

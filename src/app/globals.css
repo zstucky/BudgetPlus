@@ -614,6 +614,13 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-chart-axis { stroke: rgba(220,235,227,.2); stroke-width: .6; stroke-dasharray: 1.5 2; }
 .totals-chart-line { fill: none; stroke: #a8f5cc; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 5px rgba(94,230,168,.35)); }
 .totals-chart-dot { fill: #a8f5cc; stroke: #14241f; stroke-width: .8; vector-effect: non-scaling-stroke; }
+.totals-chart-legend { display: flex; justify-content: flex-end; gap: 13px; margin: -5px 3px 7px; color: var(--muted); font-size: .68rem; }
+.totals-chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.totals-chart-legend i { display: inline-block; width: 12px; height: 2px; }
+.totals-chart-history-key { background: #a8f5cc; }
+.totals-chart-forecast-key { border-top: 2px dashed #aab4b1; }
+.totals-chart-forecast-line { fill: none; stroke: #aab4b1; stroke-width: 1.6; stroke-dasharray: 3 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.totals-chart-forecast-dot { fill: #aab4b1; stroke: #17211e; stroke-width: .8; vector-effect: non-scaling-stroke; }
 .totals-chart-dates { display: grid; grid-template-columns: 65px minmax(0,1fr); padding: 7px 3px 0 0; color: var(--muted); font-size: .7rem; }
 .totals-chart-date-axis { display: flex; justify-content: space-between; padding-left: 0.5%; }
 .lessons-content { padding-bottom: 16px; }

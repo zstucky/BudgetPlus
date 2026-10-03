@@ -8,9 +8,8 @@ function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
 
-function getChartRange(snapshots: TotalSnapshot[]) {
-  if (!snapshots.length) return null;
-  const values = snapshots.map((point) => point.total);
+function getChartRange(values: number[]) {
+  if (!values.length) return null;
   const dataMin = Math.min(...values);
   const dataMax = Math.max(...values);
   const rawStep = (dataMax - dataMin) / 2 || Math.max(Math.abs(dataMax) * 0.12, 1);
@@ -24,7 +23,20 @@ function getChartRange(snapshots: TotalSnapshot[]) {
   return { min: lowerTick * step, max: upperTick * step };
 }
 
-export default function TotalsDashboard({ initialAccounts, initialSnapshots, outreachLiability }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; outreachLiability: number }) {
+function addMonthsClamped(date: Date, months: number) {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + months;
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(year, month, Math.min(date.getUTCDate(), lastDay), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()));
+}
+
+function getXPosition(value: string, fallback: number, startTime: number, timeSpan: number) {
+  const timestamp = new Date(value).getTime();
+  const elapsed = timeSpan > 0 ? (timestamp - startTime) / timeSpan : fallback;
+  return 8 + Math.min(1, Math.max(0, elapsed)) * 84;
+}
+
+export default function TotalsDashboard({ initialAccounts, initialSnapshots, outreachLiability, monthlyProjection, forecastStartDate }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string }) {
   const [accounts, setAccounts] = useState(initialAccounts);
   const [snapshots, setSnapshots] = useState(initialSnapshots);
   const [selected, setSelected] = useState<Account | null>(null);
@@ -39,20 +51,46 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
   const outreachAccount: Account = { id: "outreach-fund", name: "Outreach", balance: outreachLiability, balance_type: "liability" };
   const displayAccounts = [...accounts, outreachAccount];
   const total = useMemo(() => accounts.reduce((sum, account) => sum + account.balance * (account.balance_type === "liability" ? -1 : 1), 0) - outreachLiability, [accounts, outreachLiability]);
-  const chartRange = useMemo(() => getChartRange(snapshots), [snapshots]);
+  const forecastPoints = useMemo(() => {
+    if (monthlyProjection === null) return [];
+    const oldestVisibleSnapshot = snapshots[0];
+    const start = new Date(oldestVisibleSnapshot?.created_at ?? forecastStartDate);
+    const startingTotal = oldestVisibleSnapshot?.total ?? total;
+    return Array.from({ length: 7 }, (_, index) => ({
+      id: `forecast-${index}`,
+      total: startingTotal + monthlyProjection * index,
+      created_at: addMonthsClamped(start, index).toISOString(),
+    }));
+  }, [monthlyProjection, forecastStartDate, snapshots, total]);
+  const chartRange = useMemo(() => getChartRange([
+    ...snapshots.map((point) => point.total),
+    ...forecastPoints.map((point) => point.total),
+  ]), [snapshots, forecastPoints]);
+  const chartStartTime = snapshots.length
+    ? new Date(snapshots[0].created_at).getTime()
+    : forecastPoints.length ? new Date(forecastPoints[0].created_at).getTime() : 0;
+  const chartEndTime = forecastPoints.length
+    ? new Date(forecastPoints[forecastPoints.length - 1].created_at).getTime()
+    : snapshots.length ? new Date(snapshots[snapshots.length - 1].created_at).getTime() : 0;
+  const chartTimeSpan = chartEndTime - chartStartTime;
   const chartPoints = useMemo(() => {
     const history = snapshots;
     if (!history.length || !chartRange) return [];
     const span = chartRange.max - chartRange.min;
-    const firstTimestamp = new Date(history[0].created_at).getTime();
-    const lastTimestamp = new Date(history[history.length - 1].created_at).getTime();
-    const timeSpan = lastTimestamp - firstTimestamp;
     return history.map((point, index) => {
-      const timestamp = new Date(point.created_at).getTime();
-      const elapsed = timeSpan > 0 ? (timestamp - firstTimestamp) / timeSpan : history.length === 1 ? 0.5 : index / (history.length - 1);
-      return { ...point, x: 8 + elapsed * 84, y: 88 - ((point.total - chartRange.min) / span) * 72 };
+      const fallback = history.length === 1 ? 0.5 : index / (history.length - 1);
+      return { ...point, x: getXPosition(point.created_at, fallback, chartStartTime, chartTimeSpan), y: 88 - ((point.total - chartRange.min) / span) * 72 };
     });
-  }, [snapshots, chartRange]);
+  }, [snapshots, chartRange, chartTimeSpan, chartStartTime]);
+  const forecastChartPoints = useMemo(() => {
+    if (!forecastPoints.length || !chartRange) return [];
+    const span = chartRange.max - chartRange.min;
+    return forecastPoints.map((point, index) => ({
+      ...point,
+      x: getXPosition(point.created_at, index / (forecastPoints.length - 1), chartStartTime, chartTimeSpan),
+      y: 88 - ((point.total - chartRange.min) / span) * 72,
+    }));
+  }, [forecastPoints, chartRange, chartTimeSpan, chartStartTime]);
 
   function openAccount(account: Account) {
     setSelected(account);
@@ -112,18 +150,21 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
   }
 
   const line = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
+  const forecastLine = forecastChartPoints.map((point) => `${point.x},${point.y}`).join(" ");
+  const chartHasPoints = chartPoints.length > 0 || forecastChartPoints.length > 0;
 
   return (
     <section className="monthly-content totals-content" aria-labelledby="totals-title">
       <header className="monthly-heading"><h1 id="totals-title">Totals</h1></header>
       <section className="monthly-calendar totals-chart-card" aria-labelledby="net-worth-title">
         <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><Link href="/totals/history" className="totals-chart-label">History</Link></div>
-        <div className="totals-chart" role="img" aria-label={chartPoints.length ? `Net worth over time: ${chartPoints.map((point) => `${new Date(point.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })} ${money(point.total)}`).join(", ")}` : "No saved balance history yet"}>
-          {chartPoints.length && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <circle key={point.id ?? index} cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot" />)}</svg></div></> : <p>Record your first total to start tracking your progress.</p>}
+        {forecastChartPoints.length > 0 && <div className="totals-chart-legend" aria-hidden="true"><span><i className="totals-chart-history-key" />History</span><span><i className="totals-chart-forecast-key" />Prediction</span></div>}
+        <div className="totals-chart" role="img" aria-label={chartHasPoints ? `${chartPoints.length ? `Net worth history: ${chartPoints.map((point) => `${new Date(point.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })} ${money(point.total)}`).join(", ")}. ` : ""}${forecastChartPoints.length ? `Six month prediction: ${forecastChartPoints.slice(1).map((point) => `${new Date(point.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })} ${money(point.total)}`).join(", ")}` : ""}` : "No saved balance history yet"}>
+          {chartHasPoints && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/>{chartPoints.length > 0 && <><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <circle key={point.id ?? index} cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot" />)}</>}{forecastChartPoints.length > 0 && <><polyline points={forecastLine} className="totals-chart-forecast-line"/>{forecastChartPoints.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.4" className="totals-chart-forecast-dot" />)}</>}</svg></div></> : <p>Record your first total to start tracking your progress.</p>}
         </div>
         <div className="totals-chart-dates">
           <span className="totals-chart-date-spacer" aria-hidden="true" />
-          {chartPoints.length > 0 && <div className="totals-chart-date-axis"><span>{new Date(chartPoints[0].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span><span>{new Date(chartPoints[chartPoints.length - 1].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div>}
+          {chartHasPoints && <div className="totals-chart-date-axis"><span>{new Date(chartPoints[0]?.created_at ?? forecastChartPoints[0].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span><span>{new Date(forecastChartPoints[forecastChartPoints.length - 1]?.created_at ?? chartPoints[chartPoints.length - 1].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div>}
         </div>
       </section>
 
