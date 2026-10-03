@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { createAccount, deleteAccount, recordTotalSnapshot, updateAccountBalance, type Account, type TotalSnapshot } from "./actions";
 
 function money(value: number) {
@@ -116,7 +117,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
     <section className="monthly-content totals-content" aria-labelledby="totals-title">
       <header className="monthly-heading"><h1 id="totals-title">Totals</h1></header>
       <section className="monthly-calendar totals-chart-card" aria-labelledby="net-worth-title">
-        <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><span className="totals-chart-label">History</span></div>
+        <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><Link href="/totals/history" className="totals-chart-label">History</Link></div>
         <div className="totals-chart" role="img" aria-label={chartPoints.length ? `Net worth over time: ${chartPoints.map((point) => `${new Date(point.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })} ${money(point.total)}`).join(", ")}` : "No saved balance history yet"}>
           {chartPoints.length && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <circle key={point.id ?? index} cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot" />)}</svg></div></> : <p>Record your first total to start tracking your progress.</p>}
         </div>

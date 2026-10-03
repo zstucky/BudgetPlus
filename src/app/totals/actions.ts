@@ -65,6 +65,27 @@ export async function deleteAccount(accountId: string): Promise<{ error: string 
   return { error: null };
 }
 
+export async function deleteTotalSnapshot(snapshotId: string): Promise<{ error: string | null }> {
+  const { householdId, error: membershipError } = await getHousehold();
+  if (!householdId) return { error: membershipError };
+  if (typeof snapshotId !== "string" || !/^[0-9a-f-]{36}$/i.test(snapshotId)) return { error: "Invalid history point." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("total_snapshots")
+    .delete()
+    .eq("id", snapshotId)
+    .eq("household_id", householdId)
+    .select("id")
+    .maybeSingle();
+
+  if (error) return { error: error.message };
+  if (!data) return { error: "History point not found." };
+  revalidatePath("/totals");
+  revalidatePath("/totals/history");
+  return { error: null };
+}
+
 export async function recordTotalSnapshot(): Promise<ActionResult<TotalSnapshot>> {
   const { householdId, error: membershipError } = await getHousehold();
   if (!householdId) return { data: null, error: membershipError };
