@@ -531,6 +531,17 @@ h1, h2, h3, button { text-transform: capitalize; }
 .settings-content { padding-bottom: 16px; }
 .settings-card { padding: 16px; }
 .settings-card .monthly-list-heading { padding-bottom: 5px; }
+.settings-section-card { padding: 0; overflow: hidden; }
+.settings-section-card + .settings-section-card { margin-top: 12px; }
+.settings-section-heading { padding: 16px 16px 8px; }
+.settings-section-body { padding: 0 16px 16px; }
+.settings-household-link { border-top: 1px solid rgba(220,235,227,.12); }
+.settings-user-card > .settings-menu-item { width: 100%; border: 0; border-top: 1px solid rgba(220,235,227,.12); background: transparent; text-align: left; }
+.settings-placeholder-button:disabled { opacity: .78; cursor: not-allowed; }
+.settings-placeholder-button:hover:disabled { background: transparent; }
+.settings-coming-soon { padding: 4px 8px; border: 1px solid rgba(220,235,227,.12); border-radius: 99px; color: var(--muted); font-size: .66rem; }
+.settings-inline-logout { border-top: 1px solid rgba(220,235,227,.12); }
+.settings-inline-logout .settings-menu-item { width: 100%; }
 .settings-menu-card { padding: 0; margin-top: 12px; overflow: hidden; }
 .settings-menu-item { display: grid; min-height: 72px; grid-template-columns: 40px minmax(0,1fr) auto; align-items: center; gap: 11px; padding: 11px 14px; color: var(--ink); text-decoration: none; }
 .settings-menu-item:hover { background: rgba(94,230,168,.055); }
@@ -538,7 +549,6 @@ h1, h2, h3, button { text-transform: capitalize; }
 .settings-menu-item .bill-details span { font-size: .78rem; }
 .settings-menu-icon { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid rgba(94,230,168,.25); border-radius: 12px; color: #a8f5cc; background: rgba(94,230,168,.09); }
 .settings-menu-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.settings-logout-card { margin-top: 10px; }
 .settings-logout-button { border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
 .settings-logout-button:hover { background: rgba(255,98,87,.055); }
 .settings-logout-icon { border-color: rgba(255,135,125,.24); color: #ffaaa4; background: rgba(255,98,87,.08); }
