@@ -30,23 +30,18 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses, 
   const remaining = weeklyBudget - spent;
   const progress = Math.min(100, Math.max(0, (remaining / weeklyBudget) * 100));
   const progressColor = progress < 25 ? "#ff6257" : progress < 50 ? "#ffd21c" : "#5ee6a8";
-  const chartMax = Math.max(1, ...history.map((entry) => Math.max(entry.amount_spent, entry.budget_amount)));
+  const maxDeviation = Math.max(0, ...history.map((entry) => Math.abs(entry.amount_spent - entry.budget_amount)));
+  const chartMax = Math.max(1, maxDeviation);
   const chartPoints = history.map((entry, index) => {
-    const firstTime = new Date(history[0].reset_at).getTime();
-    const lastTime = new Date(history[history.length - 1].reset_at).getTime();
-    const time = new Date(entry.reset_at).getTime();
-    const elapsed = lastTime > firstTime
-      ? (time - firstTime) / (lastTime - firstTime)
-      : history.length === 1 ? 0.5 : index / (history.length - 1);
+    const deviation = entry.amount_spent - entry.budget_amount;
     return {
       ...entry,
-      x: 8 + elapsed * 84,
-      spendY: 88 - (entry.amount_spent / chartMax) * 72,
-      budgetY: 88 - (entry.budget_amount / chartMax) * 72,
+      deviation,
+      x: history.length === 1 ? 50 : 8 + (index / (history.length - 1)) * 84,
+      deviationY: 52 - (deviation / chartMax) * 34,
     };
   });
-  const spendingLine = chartPoints.map((point) => `${point.x},${point.spendY}`).join(" ");
-  const budgetLine = chartPoints.map((point) => `${point.x},${point.budgetY}`).join(" ");
+  const chartBarWidth = Math.min(9, 72 / Math.max(1, chartPoints.length));
   const ringStyle = {
     background: `conic-gradient(${progressColor} ${progress}%, #29333b ${progress}% 100%)`,
   };
@@ -146,23 +141,26 @@ return (
         ) : (
           <>
             <div className="weekly-history-legend" aria-hidden="true">
-              <span><i className="weekly-history-spend-key" /> Spending</span>
-              <span><i className="weekly-history-budget-key" /> Budget</span>
+              <span><i className="weekly-history-spend-key" /> Under budget</span>
+              <span><i className="weekly-history-budget-key" /> Over budget</span>
             </div>
-            <div className="totals-chart weekly-history-plot" role="img" aria-label={`Weekly spending history: ${chartPoints.map((point) => `${new Date(point.reset_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}, spent $${point.amount_spent.toFixed(2)} against a $${point.budget_amount.toFixed(2)} budget`).join("; ")}`}>
+            <div className="totals-chart weekly-history-plot" role="img" aria-label={`Weekly budget history: ${chartPoints.map((point) => `${new Date(point.reset_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}, ${point.deviation < 0 ? `under budget by $${Math.abs(point.deviation).toFixed(2)}` : point.deviation > 0 ? `over budget by $${point.deviation.toFixed(2)}` : "on budget"}`).join("; ")}`}>
               <div className="totals-chart-y-axis" aria-hidden="true">
-                <span>${chartMax.toFixed(0)}</span>
-                <span>${(chartMax / 2).toFixed(0)}</span>
+                <span>+${maxDeviation.toFixed(0)}</span>
                 <span>$0</span>
+                <span>−${maxDeviation.toFixed(0)}</span>
               </div>
               <div className="totals-chart-plot">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                   <line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis" />
-                  <line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis" />
                   <line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis" />
-                  <polyline points={budgetLine} className="weekly-chart-budget-line" />
-                  <polyline points={spendingLine} className="totals-chart-line" />
-                  {chartPoints.map((point) => <circle key={point.id} cx={point.x} cy={point.spendY} r="1.7" className="totals-chart-dot" />)}
+                  <line x1="5" y1="52" x2="95" y2="52" className="weekly-chart-budget-line" />
+                  {chartPoints.map((point) => {
+                    if (point.deviation === 0) return null;
+                    const barY = Math.min(52, point.deviationY);
+                    const barHeight = Math.max(1.2, Math.abs(point.deviationY - 52));
+                    return <rect key={point.id} x={point.x - chartBarWidth / 2} y={barY} width={chartBarWidth} height={barHeight} rx="1.2" className={point.deviation > 0 ? "weekly-chart-over-bar" : "weekly-chart-under-bar"} />;
+                  })}
                 </svg>
               </div>
             </div>

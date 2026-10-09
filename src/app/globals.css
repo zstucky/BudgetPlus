@@ -792,9 +792,11 @@ h1, h2, h3, button { text-transform: capitalize; }
 .weekly-history-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .weekly-history-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; }
 .weekly-history-spend-key { background: #5ee6a8; }
-.weekly-history-budget-key { height: 2px !important; border-radius: 0 !important; background: #aab4b1; }
+.weekly-history-budget-key { background: #ff7774; }
 .weekly-history-plot { height: 160px; margin-top: 0; }
-.weekly-chart-budget-line { fill: none; stroke: #aab4b1; stroke-width: 1.45; stroke-dasharray: 3 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.weekly-chart-budget-line { fill: none; stroke: rgba(239,250,246,.68); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.weekly-chart-under-bar { fill: #5ee6a8; stroke: rgba(164,245,204,.55); stroke-width: .45; vector-effect: non-scaling-stroke; }
+.weekly-chart-over-bar { fill: #ff7774; stroke: rgba(255,180,173,.58); stroke-width: .45; vector-effect: non-scaling-stroke; }
 .weekly-chart-dates { padding-top: 7px; }
 .weekly-reset-error { margin: 8px 3px 0; color: #ffaaa4; font-size: .82rem; line-height: 1.4; }
 .balance-section { min-height: 96px; padding: 0; }
