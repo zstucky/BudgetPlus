@@ -72,7 +72,7 @@ export default async function LessonsHistoryPage() {
       <BottomNav />
       <section className="monthly-content lessons-history-content" aria-labelledby="lessons-history-title">
         <header className="monthly-heading"><h1 id="lessons-history-title">Lessons By Month</h1></header>
-        <Link href="/lessons" className="totals-history-back">‹ Back to Lessons</Link>
+        <Link href="/ellie" className="totals-history-back">‹ Back to Lessons</Link>
         {byMonth.size === 0 ? (
           <section className="monthly-bills"><p className="monthly-empty">Your lesson history will appear here.</p></section>
         ) : (

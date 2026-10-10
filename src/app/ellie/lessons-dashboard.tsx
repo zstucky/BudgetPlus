@@ -89,12 +89,12 @@ export default function LessonsDashboard({
 
   return (
     <section className="monthly-content lessons-content" aria-labelledby="lessons-title">
-      <header className="monthly-heading"><h1 id="lessons-title">Lessons</h1></header>
+      <header className="monthly-heading"><h1 id="lessons-title">Ellie&apos;s $$</h1></header>
 
       <section className="monthly-calendar totals-chart-card lessons-chart-card" aria-labelledby="lessons-chart-title">
         <div className="calendar-heading">
-          <div><p className="totals-kicker">Lessons - This Month</p><h2 id="lessons-chart-title">{money(currentTotal)}</h2></div>
-          <Link href="/lessons/history" className="totals-chart-label">By month</Link>
+          <div><p className="totals-kicker">This Month</p><h2 id="lessons-chart-title">{money(currentTotal)}</h2></div>
+          <Link href="/ellie/history" className="totals-chart-label">By month</Link>
         </div>
         <div className="lessons-chart" role="img" aria-label={`Net lesson income for the last six months: ${months.map((month) => `${month.label} ${money(month.net)} net, ${money(month.income)} income, ${money(month.expense)} expenses`).join("; ")}`}>
           {months.map((month) => {
@@ -118,7 +118,7 @@ export default function LessonsDashboard({
       </section>
 
       <form className="monthly-form lessons-form" onSubmit={handleSubmit}>
-        <h2>Add a lesson</h2>
+        <h2>Add New</h2>
         <div className="lessons-type-tabs" role="group" aria-label="Lesson entry type">
           <button type="button" aria-pressed={recordType === "income"} className={recordType === "income" ? "active" : ""} onClick={() => setRecordType("income")}>Income</button>
           <button type="button" aria-pressed={recordType === "expense"} className={recordType === "expense" ? "active" : ""} onClick={() => setRecordType("expense")}>Expense</button>

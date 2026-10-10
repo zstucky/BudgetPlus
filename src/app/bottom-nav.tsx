@@ -7,14 +7,14 @@ const tabs = [
   { label: "Weekly", href: "/" },
   { label: "Monthly", href: "/monthly" },
   { label: "Totals", href: "/totals" },
-  { label: "Lessons", href: "/lessons" },
+  { label: "Ellie's $$", href: "/ellie" },
   { label: "Outreach", href: "/outreach" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
   const showHouseholdButton = pathname !== "/household"
-    && pathname !== "/lessons/history"
+    && pathname !== "/ellie/history"
     && pathname !== "/totals/history";
 
   return (
