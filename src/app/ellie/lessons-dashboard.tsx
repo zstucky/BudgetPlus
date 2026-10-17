@@ -36,6 +36,8 @@ export default function LessonsDashboard({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const currentTotal = lessons.reduce((sum, lesson) => sum + (lesson.type === "income" ? lesson.amount : 0), 0);
+  const currentExpenses = lessons.reduce((sum, lesson) => sum + (lesson.type === "expense" ? lesson.amount : 0), 0);
+  const currentNet = currentTotal - currentExpenses;
   const maxTotal = Math.max(...months.map((month) => Math.max(month.income, month.expense)), 0);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -93,10 +95,10 @@ export default function LessonsDashboard({
 
       <section className="monthly-calendar totals-chart-card lessons-chart-card" aria-labelledby="lessons-chart-title">
         <div className="calendar-heading">
-          <div><p className="totals-kicker">This Month</p><h2 id="lessons-chart-title">{money(currentTotal)}</h2></div>
+          <div><p className="totals-kicker">This Month</p><h2 id="lessons-chart-title">{money(currentNet)}</h2></div>
           <Link href="/ellie/history" className="totals-chart-label">By month</Link>
         </div>
-        <div className="lessons-chart" role="img" aria-label={`Net lesson income for the last six months: ${months.map((month) => `${month.label} ${money(month.net)} net, ${money(month.income)} income, ${money(month.expense)} expenses`).join("; ")}`}>
+        <div className="lessons-chart" role="img" aria-label={`Lesson income before expenses for the last six months: ${months.map((month) => `${month.label} ${money(month.income)} income, ${money(month.net)} net after ${money(month.expense)} expenses`).join("; ")}`}>
           {months.map((month) => {
             const netIncome = Math.max(month.net, 0);
             const stackTotal = netIncome + month.expense;
@@ -105,7 +107,7 @@ export default function LessonsDashboard({
             const redHeight = stackTotal > 0 ? (month.expense / stackTotal) * 100 : 0;
             return (
               <div className="lessons-bar-column" key={month.key}>
-                <span className={`lessons-bar-value${month.net < 0 ? " lessons-net-negative" : ""}`}>{money(month.net)}</span>
+                <span className="lessons-bar-value">{money(month.income)}</span>
                 <div className="lessons-bar-track"><div className="lessons-bar-stack" style={{ height: `${stackHeight}%` }}>
                   {netIncome > 0 && <div className="lessons-bar-net" style={{ height: `${greenHeight}%` }} />}
                   {month.expense > 0 && <div className="lessons-bar-expense" style={{ height: `${redHeight}%` }} />}
