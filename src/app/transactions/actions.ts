@@ -5,6 +5,72 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 
 export type WeeklyHistory = { id: string; amount_spent: number; budget_amount: number; reset_at: string };
+export type UnexpectedExpense = { id: string; amount: number; description: string; expense_date: string; created_at: string };
+
+const expenseDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+export async function addUnexpectedExpense(input: {
+  amount: number;
+  description: string;
+  expenseDate: string;
+}): Promise<{ expense: UnexpectedExpense | null; error: string | null }> {
+  const membership = await getCurrentMembership();
+  if (!membership.userId) return { expense: null, error: "You must be logged in." };
+  if (membership.error) return { expense: null, error: membership.error };
+  if (!membership.householdId) return { expense: null, error: "You do not belong to a household." };
+  if (!input || typeof input !== "object") return { expense: null, error: "Enter valid expense details." };
+
+  const amount = Number(input.amount);
+  const description = typeof input.description === "string" ? input.description.trim() : "";
+  const expenseDate = typeof input.expenseDate === "string" ? input.expenseDate : "";
+  const parsedDate = expenseDatePattern.test(expenseDate) ? new Date(`${expenseDate}T00:00:00.000Z`) : null;
+  if (!Number.isFinite(amount) || amount <= 0 || amount > 9999999999.99) {
+    return { expense: null, error: "Enter an amount greater than zero." };
+  }
+  if (!description) return { expense: null, error: "Enter a description." };
+  if (!parsedDate || Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== expenseDate) {
+    return { expense: null, error: "Choose a valid expense date." };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("unexpected_expenses")
+    .insert({
+      household_id: membership.householdId,
+      description,
+      amount: amount.toFixed(2),
+      expense_date: expenseDate,
+    })
+    .select("id, amount, description, expense_date, created_at")
+    .single();
+
+  if (error || !data) return { expense: null, error: error?.message ?? "Unable to save unexpected expense." };
+  revalidatePath("/");
+  revalidatePath("/totals");
+  revalidatePath("/totals/unexpected-expenses/history");
+  return { expense: { ...data, amount: Number(data.amount) }, error: null };
+}
+
+export async function deleteUnexpectedExpense(expenseId: string): Promise<{ error: string | null }> {
+  const membership = await getCurrentMembership();
+  if (!membership.userId) return { error: "You must be logged in." };
+  if (membership.error) return { error: membership.error };
+  if (!membership.householdId) return { error: "You do not belong to a household." };
+  if (typeof expenseId !== "string" || !/^[0-9a-f-]{36}$/i.test(expenseId)) return { error: "Invalid expense." };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("unexpected_expenses")
+    .delete()
+    .eq("id", expenseId)
+    .eq("household_id", membership.householdId)
+    .select("id")
+    .maybeSingle();
+  if (error) return { error: error.message };
+  if (!data) return { error: "Unexpected expense not found." };
+  revalidatePath("/totals");
+  revalidatePath("/totals/unexpected-expenses/history");
+  return { error: null };
+}
 
 export async function addTransaction(
   amount: number,

@@ -5,6 +5,10 @@ import BottomNav from "../bottom-nav";
 import TotalsDashboard from "./totals-dashboard";
 import type { Account, TotalSnapshot } from "./actions";
 
+function dateKey(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 export default async function TotalsPage() {
   const membership = await getCurrentMembership();
   if (!membership.userId) redirect("/login");
@@ -47,6 +51,7 @@ export default async function TotalsPage() {
         outreachLiability={outreachLiability}
         monthlyProjection={monthlyProjection}
         forecastStartDate={new Date().toISOString()}
+        today={dateKey(new Date())}
       />
     </main>
   );

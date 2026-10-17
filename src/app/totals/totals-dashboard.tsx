@@ -3,6 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { createAccount, deleteAccount, recordTotalSnapshot, updateAccountBalance, type Account, type TotalSnapshot } from "./actions";
+import UnexpectedExpenseForm from "@/app/transactions/unexpected-expense-form";
 
 function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
@@ -36,7 +37,7 @@ function getXPosition(value: string, fallback: number, startTime: number, timeSp
   return 8 + Math.min(1, Math.max(0, elapsed)) * 84;
 }
 
-export default function TotalsDashboard({ initialAccounts, initialSnapshots, outreachLiability, monthlyProjection, forecastStartDate }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string }) {
+export default function TotalsDashboard({ initialAccounts, initialSnapshots, outreachLiability, monthlyProjection, forecastStartDate, today }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string; today: string }) {
   const [accounts, setAccounts] = useState(initialAccounts);
   const [snapshots, setSnapshots] = useState(initialSnapshots);
   const [selected, setSelected] = useState<Account | null>(null);
@@ -180,6 +181,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
       </section>
       <button type="button" className="totals-snapshot-button" disabled={saving} onClick={addSnapshot}><span aria-hidden="true">⌁</span>{saving ? "Saving…" : "Record today’s total"}</button>
       {error && !selected && <p className="monthly-error" role="alert">{error}</p>}
+      <UnexpectedExpenseForm today={today} />
       {selected && <div className="totals-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) { setSelected(null); setConfirmDelete(false); } }}><section className={`totals-modal${confirmDelete ? "" : " totals-modal-delete-ready"}`} role="dialog" aria-modal="true" aria-labelledby="update-account-title"><button className="totals-modal-close" type="button" aria-label="Close" onClick={() => { setSelected(null); setConfirmDelete(false); }}>×</button><h2 id="update-account-title">{selected.name}</h2><p>Current balance: <strong>{money(selected.balance)}</strong></p><div className="totals-form"><label htmlFor="balance-amount">Amount</label><div className="monthly-amount-input"><span>$</span><input id="balance-amount" autoFocus type="number" min="0" max="9999999999.99" step="0.01" value={amount} onChange={(event) => setAmount(event.target.value)} /></div><div className="totals-update-actions"><button type="button" className="totals-primary-button" disabled={saving || amount === ""} onClick={() => saveBalance("add")}>{saving ? "Saving…" : "Add"}</button><button type="button" className="totals-secondary-button" disabled={saving || amount === ""} onClick={() => saveBalance("replace")}>{saving ? "Saving…" : "Replace"}</button></div><div className="totals-delete-area">{confirmDelete ? <><p>Delete <strong>{selected.name}</strong>? This can&apos;t be undone.</p><div className="totals-delete-actions"><button type="button" className="totals-delete-cancel" disabled={saving} onClick={() => setConfirmDelete(false)}>Cancel</button><button type="button" className="totals-delete-confirm" disabled={saving} onClick={removeAccount}>{saving ? "Deleting…" : "Confirm delete"}</button></div></> : <button type="button" className="totals-delete-trigger" disabled={saving} onClick={() => { setConfirmDelete(true); setError(null); }}>Delete account</button>}</div>{error && <p className="monthly-error" role="alert">{error}</p>}</div></section></div>}
     </section>
   );

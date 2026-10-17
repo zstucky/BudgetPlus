@@ -165,7 +165,7 @@ h1, h2, h3, button { text-transform: capitalize; }
 .progress-center { background: #0b151a; }
 .progress-center strong { font-size: 1.75rem; }
 .progress-center span { font-size: .88rem; }
-.expense-form, .expense-summary {
+.expense-form, .expense-summary, .unexpected-expense-form {
   border: 1px solid var(--glass-line);
   border-radius: 20px;
   background: linear-gradient(145deg, rgba(223,239,230,.13), rgba(17,29,38,.68) 53%, color-mix(in srgb, var(--accent-color) 9%, transparent));
@@ -806,7 +806,7 @@ h1, h2, h3, button { text-transform: capitalize; }
 .progress-ring { width: 112px; height: 112px; padding: 8px; margin: 0; box-shadow: 0 0 28px rgba(94,230,168,.1); }
 .progress-center { background: rgba(8,19,24,.96); }
 .progress-center strong { font-size: 1.45rem; }
-.expense-form, .expense-summary {
+.expense-form, .expense-summary, .unexpected-expense-form {
   border: 1px solid rgba(220,235,227,.24);
   border-radius: 20px;
   background: linear-gradient(145deg, rgba(223,239,230,.105), rgba(17,29,38,.58) 53%, rgba(94,230,168,.045));
@@ -834,6 +834,29 @@ h1, h2, h3, button { text-transform: capitalize; }
 .expense-list { border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
 .expense-list li { min-height: 56px; padding: 10px 13px; }
 .reset-button { margin: 0 0 3px 3px; }
+.unexpected-expense-form {
+  padding: 14px;
+  margin: 14px 0 0;
+}
+.unexpected-expense-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.unexpected-expense-form h2 { margin: 0; color: #f3f7f5; font-size: 1rem; font-weight: 600; letter-spacing: -.02em; }
+.unexpected-expense-history-link { flex: 0 0 auto; padding: 5px 8px; border: 1px solid rgba(220,235,227,.16); border-radius: 99px; color: var(--muted); font-size: .7rem; text-decoration: none; }
+.unexpected-expense-history-link:hover { border-color: rgba(164,245,204,.45); color: #d9ffea; background: rgba(94,230,168,.07); }
+.unexpected-expense-fields { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: end; gap: 9px; }
+.unexpected-expense-fields label { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 5px; color: var(--muted); font-size: .82rem; }
+.unexpected-expense-fields input { display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; height: 43px; padding: 0 10px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); background: rgba(7,16,22,.42); font-size: .9rem; }
+.unexpected-expense-fields input[type="date"] { display: flex; align-items: center; min-height: 43px; padding: 0 6px; color-scheme: dark; font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.unexpected-expense-fields input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.unexpected-expense-fields input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.unexpected-expense-fields input:focus { border-color: var(--accent-color, #5ee6a8); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #5ee6a8) 16%, transparent); }
+.unexpected-amount-input { display: flex; height: 43px; align-items: center; padding-left: 10px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; color: var(--muted); background: rgba(7,16,22,.42); font-size: .9rem; }
+.unexpected-amount-input:focus-within { border-color: var(--accent-color, #5ee6a8); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #5ee6a8) 16%, transparent); }
+.unexpected-amount-input input { height: 39px; padding-left: 4px; border: 0; background: transparent; }
+.unexpected-expense-fields .unexpected-description-field, .unexpected-expense-fields button { grid-column: 1 / -1; }
+.unexpected-expense-fields button { min-height: 41px; padding: 0 16px; margin-top: 3px; border: 1px solid color-mix(in srgb, var(--accent-color, #5ee6a8) 58%, white); border-radius: 12px; color: #101614; background: linear-gradient(100deg, color-mix(in srgb, var(--accent-color, #5ee6a8) 82%, white), var(--accent-color, #5ee6a8)); font-size: .92rem; font-weight: 800; box-shadow: 0 8px 24px color-mix(in srgb, var(--accent-color, #5ee6a8) 18%, transparent); cursor: pointer; }
+.unexpected-expense-fields button:disabled { opacity: .6; cursor: wait; }
+.unexpected-expense-message { margin: 7px 1px 0; color: #a8f5cc; font-size: .74rem; }
+.unexpected-expense-message.is-error { color: #ffaaa4; }
 .account-actions { gap: 20px; margin: 0 0 0 3px; }
 
 @media (min-width: 560px) {
