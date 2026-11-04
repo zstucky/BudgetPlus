@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { createAccount, deleteAccount, recordTotalSnapshot, updateAccountBalance, type Account, type TotalSnapshot } from "./actions";
+import { createAccount, deleteAccount, recordTotalSnapshot, updateAccountBalance, type Account, type Goal, type TotalSnapshot } from "./actions";
 import UnexpectedExpenseForm from "@/app/transactions/unexpected-expense-form";
 
 function money(value: number) {
@@ -37,9 +37,10 @@ function getXPosition(value: string, fallback: number, startTime: number, timeSp
   return 8 + Math.min(1, Math.max(0, elapsed)) * 84;
 }
 
-export default function TotalsDashboard({ initialAccounts, initialSnapshots, outreachLiability, monthlyProjection, forecastStartDate, today }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string; today: string }) {
+export default function TotalsDashboard({ initialAccounts, initialSnapshots, initialGoals, outreachLiability, monthlyProjection, forecastStartDate, today }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; initialGoals: Goal[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string; today: string }) {
   const [accounts, setAccounts] = useState(initialAccounts);
   const [snapshots, setSnapshots] = useState(initialSnapshots);
+  const goals = initialGoals;
   const [selected, setSelected] = useState<Account | null>(null);
   const [selectedChartPoint, setSelectedChartPoint] = useState<{ id: string; created_at: string; total: number; x: number; y: number } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -67,13 +68,16 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
   const chartRange = useMemo(() => getChartRange([
     ...snapshots.map((point) => point.total),
     ...forecastPoints.map((point) => point.total),
-  ]), [snapshots, forecastPoints]);
+    ...goals.map((goal) => goal.target_amount),
+    snapshots[0]?.total ?? total,
+  ]), [snapshots, forecastPoints, goals, total]);
   const chartStartTime = snapshots.length
     ? new Date(snapshots[0].created_at).getTime()
-    : forecastPoints.length ? new Date(forecastPoints[0].created_at).getTime() : 0;
-  const chartEndTime = forecastPoints.length
+    : forecastPoints.length ? new Date(forecastPoints[0].created_at).getTime() : new Date(forecastStartDate).getTime();
+  const defaultChartEndTime = forecastPoints.length
     ? new Date(forecastPoints[forecastPoints.length - 1].created_at).getTime()
     : snapshots.length ? new Date(snapshots[snapshots.length - 1].created_at).getTime() : 0;
+  const chartEndTime = defaultChartEndTime;
   const chartTimeSpan = chartEndTime - chartStartTime;
   const chartPoints = useMemo(() => {
     const history = snapshots;
@@ -93,6 +97,16 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
       y: 88 - ((point.total - chartRange.min) / span) * 72,
     }));
   }, [forecastPoints, chartRange, chartTimeSpan, chartStartTime]);
+  const goalChartLines = useMemo(() => {
+    if (!chartRange) return [];
+    const span = chartRange.max - chartRange.min;
+    const startAmount = snapshots[0]?.total ?? total;
+    return goals.filter((goal) => new Date(`${goal.target_date}T00:00:00`).getTime() >= chartStartTime).map((goal) => {
+      const targetTime = new Date(`${goal.target_date}T00:00:00Z`).getTime();
+      const x = chartTimeSpan > 0 ? 8 + ((targetTime - chartStartTime) / chartTimeSpan) * 84 : 92;
+      return { ...goal, points: `8,${88 - ((startAmount - chartRange.min) / span) * 72} ${x},${88 - ((goal.target_amount - chartRange.min) / span) * 72}`, x, y: 88 - ((goal.target_amount - chartRange.min) / span) * 72 };
+    });
+  }, [goals, chartRange, snapshots, total, chartStartTime, chartTimeSpan]);
 
   function openAccount(account: Account) {
     setSelected(account);
@@ -153,20 +167,20 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, out
 
   const line = chartPoints.map((point) => `${point.x},${point.y}`).join(" ");
   const forecastLine = forecastChartPoints.map((point) => `${point.x},${point.y}`).join(" ");
-  const chartHasPoints = chartPoints.length > 0 || forecastChartPoints.length > 0;
+  const chartHasPoints = chartPoints.length > 0 || forecastChartPoints.length > 0 || goalChartLines.length > 0;
 
   return (
     <section className="monthly-content totals-content" aria-labelledby="totals-title">
       <header className="monthly-heading"><h1 id="totals-title">Totals</h1></header>
       <section className="monthly-calendar totals-chart-card" aria-labelledby="net-worth-title">
-        <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><Link href="/totals/history" className="totals-chart-label">History</Link></div>
-        {forecastChartPoints.length > 0 && <div className="totals-chart-legend" aria-hidden="true"><span><i className="totals-chart-history-key" />History</span><span><i className="totals-chart-forecast-key" />Prediction</span></div>}
+        <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><div className="totals-chart-links"><Link href="/totals/goals" className="totals-chart-label">Goals</Link><Link href="/totals/history" className="totals-chart-label">History</Link></div></div>
+        {(forecastChartPoints.length > 0 || goalChartLines.length > 0) && <div className="totals-chart-legend" aria-hidden="true">{forecastChartPoints.length > 0 && <span><i className="totals-chart-history-key" />History</span>}{forecastChartPoints.length > 0 && <span><i className="totals-chart-forecast-key" />Prediction</span>}{goalChartLines.map((goal) => <span key={goal.id}><i style={{ backgroundColor: goal.color }} />{goal.name}</span>)}</div>}
         <div className="totals-chart" role="group" aria-label={chartHasPoints ? "Net worth history and prediction chart. Select a point to see its date and amount." : "No saved balance history yet"}>
-          {chartHasPoints && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/>{chartPoints.length > 0 && <><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <g key={point.id ?? index}><circle cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot"/><circle cx={point.x} cy={point.y} r="5" className="totals-chart-hit-target" role="button" tabIndex={0} aria-label={`History, ${new Date(point.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}, ${money(point.total)}`} onClick={() => setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y })} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y }); } }}/></g>)}</>}{forecastChartPoints.length > 0 && <><polyline points={forecastLine} className="totals-chart-forecast-line"/><g pointerEvents="none" aria-hidden="true">{forecastChartPoints.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.4" className="totals-chart-forecast-dot"/>)}</g></>}</svg>{selectedChartPoint && <div className="totals-chart-selection" role="status" aria-live="polite" style={{ left: `${selectedChartPoint.x}%`, top: `${selectedChartPoint.y}%`, transform: `translate(${selectedChartPoint.x < 25 ? "0" : selectedChartPoint.x > 75 ? "-100%" : "-50%"}, ${selectedChartPoint.y < 35 ? "12px" : "calc(-100% - 12px)"})` }}><strong>{new Date(selectedChartPoint.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</strong><strong>{money(selectedChartPoint.total)}</strong><button type="button" onClick={() => setSelectedChartPoint(null)} aria-label="Close chart point details">×</button></div>}</div></> : <p>Record your first total to start tracking your progress.</p>}
+          {chartHasPoints && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/>{goalChartLines.map((goal) => <g key={goal.id}><polyline points={goal.points} className="totals-chart-goal-line" style={{ stroke: goal.color }} /><circle cx={goal.x} cy={goal.y} r="1.8" className="totals-chart-goal-dot" style={{ fill: goal.color }} /></g>)}{chartPoints.length > 0 && <><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <g key={point.id ?? index}><circle cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot"/><circle cx={point.x} cy={point.y} r="5" className="totals-chart-hit-target" role="button" tabIndex={0} aria-label={`History, ${new Date(point.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}, ${money(point.total)}`} onClick={() => setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y })} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y }); } }}/></g>)}</>}{forecastChartPoints.length > 0 && <><polyline points={forecastLine} className="totals-chart-forecast-line"/><g pointerEvents="none" aria-hidden="true">{forecastChartPoints.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.4" className="totals-chart-forecast-dot"/>)}</g></>}</svg>{selectedChartPoint && <div className="totals-chart-selection" role="status" aria-live="polite" style={{ left: `${selectedChartPoint.x}%`, top: `${selectedChartPoint.y}%`, transform: `translate(${selectedChartPoint.x < 25 ? "0" : selectedChartPoint.x > 75 ? "-100%" : "-50%"}, ${selectedChartPoint.y < 35 ? "12px" : "calc(-100% - 12px)"})` }}><strong>{new Date(selectedChartPoint.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</strong><strong>{money(selectedChartPoint.total)}</strong><button type="button" onClick={() => setSelectedChartPoint(null)} aria-label="Close chart point details">×</button></div>}</div></> : <p>Record your first total to start tracking your progress.</p>}
         </div>
         <div className="totals-chart-dates">
           <span className="totals-chart-date-spacer" aria-hidden="true" />
-          {chartHasPoints && <div className="totals-chart-date-axis"><span>{new Date(chartPoints[0]?.created_at ?? forecastChartPoints[0].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span><span>{new Date(forecastChartPoints[forecastChartPoints.length - 1]?.created_at ?? chartPoints[chartPoints.length - 1].created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div>}
+          {chartHasPoints && <div className="totals-chart-date-axis"><span>{new Date(chartPoints[0]?.created_at ?? forecastChartPoints[0]?.created_at ?? forecastStartDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span><span>{new Date(chartEndTime).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span></div>}
         </div>
       </section>
 

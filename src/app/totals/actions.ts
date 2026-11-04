@@ -6,6 +6,7 @@ import { getCurrentMembership } from "@/lib/households";
 
 export type Account = { id: string; name: string; balance: number; balance_type: "asset" | "liability" };
 export type TotalSnapshot = { id: string; total: number; created_at: string };
+export type Goal = { id: string; name: string; target_amount: number; target_date: string; start_amount: number; start_date: string; color: string };
 
 type ActionResult<T> = { data: T | null; error: string | null };
 
@@ -107,4 +108,48 @@ export async function recordTotalSnapshot(): Promise<ActionResult<TotalSnapshot>
   if (error || !data) return { data: null, error: error?.message ?? "Unable to record total." };
   revalidatePath("/totals");
   return { data: { ...data, total: Number(data.total) }, error: null };
+}
+
+function validGoal(input: Partial<Goal>) {
+  const name = typeof input.name === "string" ? input.name.trim() : "";
+  const targetAmount = Number(input.target_amount);
+  const startAmount = Number(input.start_amount);
+  const targetDate = typeof input.target_date === "string" ? input.target_date : "";
+  const startDate = typeof input.start_date === "string" ? input.start_date : "";
+  const color = typeof input.color === "string" ? input.color : "";
+  if (!name || name.length > 80) return { error: "Enter a goal name of 80 characters or fewer." };
+  if (!Number.isFinite(targetAmount) || targetAmount <= 0 || targetAmount > 9999999999.99) return { error: "Enter a valid target amount." };
+  if (!Number.isFinite(startAmount) || Math.abs(startAmount) > 9999999999.99) return { error: "Enter a valid starting amount." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate) || !/^\d{4}-\d{2}-\d{2}$/.test(startDate) || targetDate <= startDate) return { error: "Choose a target date after the start date." };
+  if (!/^#[0-9A-Fa-f]{6}$/.test(color)) return { error: "Choose a valid goal color." };
+  return { value: { name, target_amount: targetAmount, target_date: targetDate, start_amount: startAmount, start_date: startDate, color } };
+}
+
+export async function saveGoal(input: Partial<Goal> & { id?: string }): Promise<ActionResult<Goal>> {
+  const { householdId, error: membershipError } = await getHousehold();
+  if (!householdId) return { data: null, error: membershipError };
+  const validated = validGoal(input);
+  if (!validated.value) return { data: null, error: validated.error ?? "Invalid goal." };
+  if (input.id && !/^[0-9a-f-]{36}$/i.test(input.id)) return { data: null, error: "Invalid goal." };
+  const supabase = await createClient();
+  const result = input.id
+    ? await supabase.from("goals").update(validated.value).eq("id", input.id).eq("household_id", householdId).select("id, name, target_amount, target_date, start_amount, start_date, color").maybeSingle()
+    : await supabase.from("goals").insert({ ...validated.value, household_id: householdId }).select("id, name, target_amount, target_date, start_amount, start_date, color").single();
+  if (result.error || !result.data) return { data: null, error: result.error?.message ?? "Goal not found." };
+  revalidatePath("/totals");
+  revalidatePath("/totals/goals");
+  return { data: { ...result.data, target_amount: Number(result.data.target_amount), start_amount: Number(result.data.start_amount) }, error: null };
+}
+
+export async function deleteGoal(goalId: string): Promise<{ error: string | null }> {
+  const { householdId, error: membershipError } = await getHousehold();
+  if (!householdId) return { error: membershipError };
+  if (typeof goalId !== "string" || !/^[0-9a-f-]{36}$/i.test(goalId)) return { error: "Invalid goal." };
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("goals").delete().eq("id", goalId).eq("household_id", householdId).select("id").maybeSingle();
+  if (error) return { error: error.message };
+  if (!data) return { error: "Goal not found." };
+  revalidatePath("/totals");
+  revalidatePath("/totals/goals");
+  return { error: null };
 }

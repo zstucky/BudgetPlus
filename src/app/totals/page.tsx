@@ -16,13 +16,14 @@ export default async function TotalsPage() {
   if (!membership.householdId) redirect("/setup-household");
 
   const supabase = await createClient();
-  const [accountsResult, snapshotsResult, outreachIncomeResult, outreachSpendsResult, householdResult, billsResult] = await Promise.all([
+  const [accountsResult, snapshotsResult, outreachIncomeResult, outreachSpendsResult, householdResult, billsResult, goalsResult] = await Promise.all([
     supabase.from("accounts").select("id, name, balance, balance_type").eq("household_id", membership.householdId).order("created_at", { ascending: true }),
     supabase.from("total_snapshots").select("id, total, created_at").eq("household_id", membership.householdId).order("created_at", { ascending: false }).limit(15),
     supabase.from("outreach_income").select("amount").eq("household_id", membership.householdId),
     supabase.from("outreach_spends").select("amount").eq("household_id", membership.householdId),
     supabase.from("households").select("monthly_income, weekly_budget").eq("id", membership.householdId).single(),
     supabase.from("recurring_bills").select("amount").eq("household_id", membership.householdId),
+    supabase.from("goals").select("id, name, target_amount, target_date, start_amount, start_date, color").eq("household_id", membership.householdId).order("target_date", { ascending: true }),
   ]);
   if (accountsResult.error) return <TotalsLoadError message={accountsResult.error.message} />;
   if (snapshotsResult.error) return <TotalsLoadError message={snapshotsResult.error.message} />;
@@ -30,9 +31,11 @@ export default async function TotalsPage() {
   if (outreachSpendsResult.error) return <TotalsLoadError message={outreachSpendsResult.error.message} />;
   if (householdResult.error || !householdResult.data) return <TotalsLoadError message={householdResult.error?.message ?? "Household not found."} />;
   if (billsResult.error) return <TotalsLoadError message={billsResult.error.message} />;
+  if (goalsResult.error) return <TotalsLoadError message={goalsResult.error.message} />;
 
   const accounts: Account[] = (accountsResult.data ?? []).map((account) => ({ ...account, balance: Number(account.balance) }));
   const snapshots: TotalSnapshot[] = (snapshotsResult.data ?? []).map((snapshot) => ({ ...snapshot, total: Number(snapshot.total) })).reverse();
+  const goals = (goalsResult.data ?? []).map((goal) => ({ ...goal, target_amount: Number(goal.target_amount), start_amount: Number(goal.start_amount) }));
   const outreachAvailable = (outreachIncomeResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0)
     - (outreachSpendsResult.data ?? []).reduce((sum, entry) => sum + Number(entry.amount), 0);
   const outreachLiability = Math.max(0, outreachAvailable);
@@ -48,6 +51,7 @@ export default async function TotalsPage() {
       <TotalsDashboard
         initialAccounts={accounts}
         initialSnapshots={snapshots}
+        initialGoals={goals}
         outreachLiability={outreachLiability}
         monthlyProjection={monthlyProjection}
         forecastStartDate={new Date().toISOString()}
