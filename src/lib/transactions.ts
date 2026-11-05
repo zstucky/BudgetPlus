@@ -5,6 +5,7 @@ export type Transaction = {
   amount: number;
   description: string;
   created_at: string;
+  transaction_date: string;
 };
 
 export async function getHouseholdTransactions(
@@ -14,7 +15,7 @@ export async function getHouseholdTransactions(
 
   const { data, error } = await supabase
     .from("transactions")
-    .select("id, amount, description, created_at")
+    .select("id, amount, description, created_at, transaction_date")
     .eq("household_id", householdId)
     .eq("active", true)
     .order("created_at", { ascending: false });
@@ -32,6 +33,7 @@ export async function getHouseholdTransactions(
       amount: Number(transaction.amount),
       description: transaction.description,
       created_at: transaction.created_at,
+      transaction_date: transaction.transaction_date,
     })),
     error: null,
   };

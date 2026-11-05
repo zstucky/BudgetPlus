@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "../../bottom-nav";
+import TransactionHistoryList from "./history-list";
 
 export default async function TransactionHistoryPage() {
   const membership = await getCurrentMembership();
@@ -20,6 +21,7 @@ export default async function TransactionHistoryPage() {
     .order("created_at", { ascending: false });
 
   if (error) return <HistoryLoadError message={error.message} />;
+  const transactions = (data ?? []).map((transaction) => ({ ...transaction, amount: Number(transaction.amount) }));
 
   return (
     <main className="monthly-page">
@@ -27,31 +29,10 @@ export default async function TransactionHistoryPage() {
       <section className="monthly-content totals-history-content" aria-labelledby="transaction-history-title">
         <header className="monthly-heading"><h1 id="transaction-history-title">Transaction history</h1></header>
         <Link href="/" className="totals-history-back">‹ Back to Weekly</Link>
-        <section className="monthly-bills totals-history-list" aria-label="Inactive transactions">
-          {!data?.length ? (
-            <p className="monthly-empty">Transactions from completed weeks will appear here.</p>
-          ) : (
-            <ul>
-              {data.map((transaction) => (
-                <li key={transaction.id}>
-                  <div className="bill-details">
-                    <strong>{transaction.description}</strong>
-                    <span>{formatDate(transaction.transaction_date)}</span>
-                  </div>
-                  <strong className="transaction-history-amount">−${Number(transaction.amount).toFixed(2)}</strong>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <TransactionHistoryList initialTransactions={transactions} />
       </section>
     </main>
   );
-}
-
-function formatDate(date: string) {
-  const [year, month, day] = date.split("-").map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function HistoryLoadError({ message }: { message: string }) {

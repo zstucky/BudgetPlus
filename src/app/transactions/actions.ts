@@ -75,12 +75,14 @@ export async function deleteUnexpectedExpense(expenseId: string): Promise<{ erro
 export async function addTransaction(
   amount: number,
   description: string,
+  transactionDate: string,
 ): Promise<{
   transaction: {
     id: string;
     amount: number;
     description: string;
     created_at: string;
+    transaction_date: string;
   } | null;
   error: string | null;
 }> {
@@ -107,6 +109,13 @@ export async function addTransaction(
     };
   }
 
+  const parsedDate = typeof transactionDate === "string" && expenseDatePattern.test(transactionDate)
+    ? new Date(`${transactionDate}T00:00:00.000Z`)
+    : null;
+  if (!parsedDate || Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== transactionDate) {
+    return { transaction: null, error: "Choose a valid transaction date." };
+  }
+
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -115,8 +124,9 @@ export async function addTransaction(
       household_id: membership.householdId,
       amount,
       description,
+      transaction_date: transactionDate,
     })
-    .select("id, amount, description, created_at")
+    .select("id, amount, description, created_at, transaction_date")
     .single();
 
   if (error || !data) {
@@ -215,6 +225,11 @@ export async function deleteTransaction(
     .delete()
     .eq("id", transactionId)
     .eq("household_id", membership.householdId);
+
+  if (!error) {
+    revalidatePath("/");
+    revalidatePath("/transactions/history");
+  }
 
   return {
     error: error?.message ?? null,

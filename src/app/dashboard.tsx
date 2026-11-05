@@ -10,21 +10,24 @@ type Expense = {
   amount: number;
   description: string;
   created_at: string;
+  transaction_date: string;
 };
 
 type DashboardProps = {
   householdId: string;
   weeklyBudget: number;
+  today: string;
   initialExpenses: Expense[]
   initialHistory: WeeklyHistory[];
 };
 
-export default function Dashboard({ householdId, weeklyBudget, initialExpenses, initialHistory }: DashboardProps) {
+export default function Dashboard({ householdId, weeklyBudget, today, initialExpenses, initialHistory }: DashboardProps) {
   const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [history, setHistory] = useState<WeeklyHistory[]>(initialHistory);
   const [resetError, setResetError] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [transactionDate, setTransactionDate] = useState(today);
   const [isAdding, setIsAdding] = useState(false);
 
   const spent = expenses.reduce((total, expense) => total + expense.amount, 0);
@@ -58,6 +61,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses, 
     const result = await addTransaction(
       transactionAmount,
       transactionDescription,
+      transactionDate,
     );
     if (result.error) {
       console.error("Failed to add transaction:", result.error);
@@ -74,6 +78,7 @@ export default function Dashboard({ householdId, weeklyBudget, initialExpenses, 
     ]);
     setAmount("");
     setDescription("");
+    setTransactionDate(today);
   } finally {
     setIsAdding(false);
   }
@@ -116,6 +121,7 @@ async function resetBudget() {
   setExpenses([]);
   setAmount("");
   setDescription("");
+  setTransactionDate(today);
 }
 
 return (
@@ -202,7 +208,7 @@ return (
 
       <form className="expense-form" onSubmit={subtractExpense}>
         <label htmlFor="expense">Purchase</label>
-        <div className="input-row">
+        <div className="weekly-purchase-fields">
           <div className="amount-input">
             <span aria-hidden="true">$</span>
 
@@ -217,6 +223,15 @@ return (
               onChange={(event) => setAmount(event.target.value)}
             />
           </div>
+          <div className="amount-input weekly-date-input">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+              <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" />
+            </svg>
+            <input id="transaction-date" aria-label="Transaction date" type="date" required value={transactionDate} onChange={(event) => setTransactionDate(event.target.value)} />
+          </div>
+        </div>
+        <div className="input-row">
           <input
             id="description"
             className="description-input"
@@ -250,7 +265,10 @@ return (
           <ul className="expense-list" aria-label="Expenses added this week">
             {expenses.map((expense) => (
               <li key={expense.id}>
-                <span>{expense.description}</span>
+                <div className="weekly-transaction-details">
+                  <span>{expense.description}</span>
+                  <small>{formatTransactionDate(expense.transaction_date)}</small>
+                </div>
 
                 <div className="transaction-actions">
                   <strong>−${expense.amount.toFixed(2)}</strong>
@@ -278,4 +296,9 @@ return (
     </section>
   </main>
 );
+}
+
+function formatTransactionDate(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }

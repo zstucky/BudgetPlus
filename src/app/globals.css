@@ -617,6 +617,9 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-history-list .bill-details strong { font-size: .86rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .totals-history-delete { color: rgba(235,245,240,.62); }
 .weekly-transactions-heading { display: flex; align-items: center; justify-content: space-between; padding: 3px 2px 9px; color: var(--muted); font-size: .85rem; }
+.weekly-transaction-details { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+.weekly-transaction-details > span { color: #f3f7f5; }
+.weekly-transaction-details small { color: var(--muted); font-size: .72rem; }
 .transaction-history-amount { color: #ff8f87; font-size: .9rem; font-variant-numeric: tabular-nums; }
 .totals-chart { position: relative; display: grid; height: 160px; grid-template-columns: 65px minmax(0,1fr); grid-template-rows: minmax(0,1fr); overflow: hidden; border: 1px solid rgba(220,235,227,.13); border-radius: 14px; background: linear-gradient(180deg, rgba(6,14,20,.33), rgba(6,14,20,.12)); }
 .totals-chart > p { display: grid; height: 100%; grid-column: 1 / -1; place-items: center; padding: 0 30px; margin: 0; color: var(--muted); font-size: .86rem; text-align: center; }
@@ -865,6 +868,13 @@ h1, h2, h3, button { text-transform: capitalize; }
 .expense-form { padding: 16px; margin: 0 0 14px; }
 .expense-form label { margin: 0 2px 9px; font-size: 1.1rem; font-weight: 400; letter-spacing: -.02em; }
 .expense-form .input-row { gap: 9px; margin: 0; }
+.weekly-purchase-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 9px; margin-bottom: 9px; }
+.weekly-date-input { gap: 8px; }
+.weekly-date-input svg { width: 18px; height: 18px; flex: 0 0 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.weekly-date-input:focus-within { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 16%, transparent); }
+.weekly-date-input input { display: flex; align-items: center; flex: 1; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; border: 0; border-radius: 0; outline: 0; color: var(--ink); background: transparent; color-scheme: dark; font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.weekly-date-input input::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.weekly-date-input input::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
 .amount-input, .description-input {
   height: 47px;
   min-height: 47px;

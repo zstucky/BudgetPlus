@@ -4,6 +4,10 @@ import { getCurrentMembership } from "@/lib/households";
 import Dashboard from "./dashboard";
 import { getHouseholdTransactions } from "@/lib/transactions";
 
+function dateKey(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 export default async function Home() {
   const membership = await getCurrentMembership();
 
@@ -86,6 +90,7 @@ export default async function Home() {
     <Dashboard
       householdId={membership.householdId}
       weeklyBudget={Number(household.weekly_budget)}
+      today={dateKey(new Date())}
       initialExpenses={transactions.data}
       initialHistory={(weeklyHistory ?? []).reverse().map((entry) => ({
         ...entry,
