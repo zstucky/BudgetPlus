@@ -158,7 +158,8 @@ export async function resetTransactions(): Promise<{ history: WeeklyHistory | nu
   const { data: transactions, error: transactionError } = await supabase
     .from("transactions")
     .select("amount")
-    .eq("household_id", membership.householdId);
+    .eq("household_id", membership.householdId)
+    .eq("active", true);
   if (transactionError) return { history: null, error: transactionError.message };
 
   const amountSpent = (transactions ?? []).reduce((sum, transaction) => sum + Number(transaction.amount), 0);
@@ -171,8 +172,9 @@ export async function resetTransactions(): Promise<{ history: WeeklyHistory | nu
 
   const { error } = await supabase
     .from("transactions")
-    .delete()
-    .eq("household_id", membership.householdId);
+    .update({ active: false })
+    .eq("household_id", membership.householdId)
+    .eq("active", true);
 
   if (error) {
     const { error: cleanupError } = await supabase.from("weekly_history").delete()

@@ -1,6 +1,7 @@
 "use client";
 
 import { SubmitEvent, useState, CSSProperties } from "react";
+import Link from "next/link";
 import { addTransaction, resetTransactions, deleteTransaction, type WeeklyHistory } from "@/app/transactions/actions";
 import BottomNav from "./bottom-nav";
 
@@ -93,7 +94,7 @@ async function removeExpense(transactionId: string) {
 
 async function resetBudget() {
   const confirmed = window.confirm(
-    "Are you sure you want to clear all transactions for your household? This cannot be undone.",
+    "End this week and move its active transactions to history?",
   );
 
   if (!confirmed) return;
@@ -238,6 +239,11 @@ return (
         <div className="spending-summary">
           <span>Spent this week</span>
           <strong>${spent.toFixed(2)}</strong>
+        </div>
+
+        <div className="weekly-transactions-heading">
+          <span>Transactions</span>
+          <Link href="/transactions/history" className="totals-chart-label">History</Link>
         </div>
 
         {expenses.length > 0 && (

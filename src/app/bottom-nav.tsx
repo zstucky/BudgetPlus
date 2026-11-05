@@ -15,7 +15,8 @@ export default function BottomNav() {
   const pathname = usePathname();
   const showHouseholdButton = pathname !== "/household"
     && pathname !== "/ellie/history"
-    && pathname !== "/totals/history";
+    && pathname !== "/totals/history"
+    && pathname !== "/transactions/history";
 
   return (
     <>

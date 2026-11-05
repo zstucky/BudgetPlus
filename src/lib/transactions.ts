@@ -16,6 +16,7 @@ export async function getHouseholdTransactions(
     .from("transactions")
     .select("id, amount, description, created_at")
     .eq("household_id", householdId)
+    .eq("active", true)
     .order("created_at", { ascending: false });
 
   if (error) {
