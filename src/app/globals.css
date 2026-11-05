@@ -507,16 +507,16 @@ h1, h2, h3, button { text-transform: capitalize; }
 .cars-maintenance-form { gap: 4px; padding: 9px; margin-top: 8px; }
 .cars-maintenance-form h3 { margin-bottom: 1px; color: #a8f5cc; }
 .cars-maintenance-form.totals-form > input { min-height: 36px; }
-.cars-maintenance-form > input, .cars-entry-grid > div > input[type="date"], .cars-entry-grid > div > input[type="number"], .cars-add-form input { width: 100%; min-height: 36px; padding: 0 9px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; outline: 0; color: var(--ink); background: rgba(7,16,22,.65); font: inherit; }
-.cars-entry-grid > div > input[type="date"] { color-scheme: dark; }
+.cars-maintenance-form > input, .cars-entry-grid > div > input[type="number"], .cars-add-form input { box-sizing: border-box; width: 100%; min-height: 36px; padding: 0 9px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; outline: 0; color: var(--ink); background: rgba(7,16,22,.65); font: inherit; }
+.cars-entry-grid > div > .date-input-with-icon > input[type="date"] { box-sizing: border-box; width: 100%; min-height: 36px; padding: 0 9px 0 32px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.65); font: inherit; }
 .cars-maintenance-form input:focus, .cars-add-form input:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
 .cars-entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 .cars-service-fields { grid-template-columns: minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.2fr); gap: 5px; }
 .cars-entry-grid > div { display: grid; min-width: 0; gap: 5px; }
 .cars-entry-grid label, .cars-maintenance-form label, .cars-add-form label { color: #dbe6e1; font-size: .75rem; font-weight: 700; }
-.cars-service-fields > div > input[type="date"] { display: flex; min-width: 0; max-width: 100%; padding: 0 4px; appearance: none; -webkit-appearance: none; font-size: .68rem; }
-.cars-service-fields > div > input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
-.cars-service-fields > div > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.cars-service-fields > div > .date-input-with-icon > input[type="date"] { display: flex; min-width: 0; max-width: 100%; padding: 0 4px 0 22px; appearance: none; -webkit-appearance: none; font-size: .68rem; }
+.cars-service-fields > div > .date-input-with-icon > input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.cars-service-fields > div > .date-input-with-icon > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
 .cars-cost-input { display: flex; min-width: 0; min-height: 36px; align-items: center; gap: 4px; padding: 0 7px; border: 1px solid rgba(224,238,234,.3); border-radius: 9px; color: var(--muted); background: rgba(7,16,22,.65); font-size: .76rem; }
 .cars-cost-input:focus-within { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
 .cars-cost-input input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; }
@@ -649,9 +649,9 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-goal-form-card .monthly-list-heading { padding: 0 2px 10px; }
 .totals-goal-form-card .monthly-list-heading h2, .totals-goals-list .monthly-list-heading h2 { margin: 0; font-size: 1rem; text-transform: none; }
 .totals-goal-form-card .totals-form { padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.totals-goal-form-card .totals-form-grid input[type="date"] { display: flex; align-items: center; width: 100%; min-width: 0; max-width: 100%; min-height: 47px; padding: 0 6px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.42); font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
-.totals-goal-form-card .totals-form-grid input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
-.totals-goal-form-card .totals-form-grid input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.totals-goal-form-card .totals-form-grid .date-input-with-icon > input[type="date"] { display: flex; align-items: center; width: 100%; min-width: 0; max-width: 100%; min-height: 47px; padding: 0 6px 0 32px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.42); font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.totals-goal-form-card .totals-form-grid .date-input-with-icon > input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.totals-goal-form-card .totals-form-grid .date-input-with-icon > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
 .totals-goal-color { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .8rem; }
 .totals-goal-color input { width: 48px; height: 38px; padding: 3px; }
 .totals-goal-form-actions { display: flex; gap: 8px; }
@@ -721,10 +721,10 @@ h1, h2, h3, button { text-transform: capitalize; }
 .lessons-form-fields .lessons-description-field { grid-column: 1 / -1; }
 .lessons-form-fields input[type="text"] { width: 100%; min-width: 0; min-height: 47px; padding: 0 12px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); background: rgba(7,16,22,.42); font: inherit; }
 .lessons-form-fields input[type="text"]:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
-.lessons-form-fields input[type="date"] { display: flex; align-items: center; width: 100%; min-width: 0; max-width: 100%; min-height: 47px; padding: 0 6px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.42); font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
-.lessons-form-fields input[type="date"]::-webkit-date-and-time-value { min-height: 1.2em; text-align: left; }
-.lessons-form-fields input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
-.lessons-form-fields input[type="date"]:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
+.lessons-form-fields .date-input-with-icon > input[type="date"] { display: flex; align-items: center; width: 100%; min-width: 0; max-width: 100%; min-height: 47px; padding: 0 6px 0 32px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); color-scheme: dark; background: rgba(7,16,22,.42); font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.lessons-form-fields .date-input-with-icon > input[type="date"]::-webkit-date-and-time-value { min-height: 1.2em; text-align: left; }
+.lessons-form-fields .date-input-with-icon > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.lessons-form-fields .date-input-with-icon > input[type="date"]:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.13); }
 .lessons-list { margin-top: 14px; }
 .totals-negative { color: #ffaaa4 !important; }
 .totals-accounts ul { border: 1px solid rgba(220,235,227,.18); border-radius: 15px; background: rgba(6,14,20,.27); }
@@ -869,8 +869,12 @@ h1, h2, h3, button { text-transform: capitalize; }
 .expense-form label { margin: 0 2px 9px; font-size: 1.1rem; font-weight: 400; letter-spacing: -.02em; }
 .expense-form .input-row { gap: 9px; margin: 0; }
 .weekly-purchase-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 9px; margin-bottom: 9px; }
+.date-input-with-icon { position: relative; width: 100%; min-width: 0; color: var(--muted); }
+.date-input-with-icon .calendar-input-icon { position: absolute; z-index: 1; top: 50%; left: 9px; width: 16px; height: 16px; transform: translateY(-50%); pointer-events: none; }
+.cars-service-fields .date-input-with-icon .calendar-input-icon { left: 5px; width: 13px; height: 13px; }
 .weekly-date-input { gap: 8px; }
-.weekly-date-input svg { width: 18px; height: 18px; flex: 0 0 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.calendar-input-icon { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.weekly-date-input .calendar-input-icon { position: static; width: 18px; height: 18px; flex: 0 0 18px; transform: none; }
 .weekly-date-input:focus-within { border-color: var(--accent-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 16%, transparent); }
 .weekly-date-input input { display: flex; align-items: center; flex: 1; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; border: 0; border-radius: 0; outline: 0; color: var(--ink); background: transparent; color-scheme: dark; font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
 .weekly-date-input input::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
@@ -903,9 +907,9 @@ h1, h2, h3, button { text-transform: capitalize; }
 .unexpected-expense-fields { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: end; gap: 9px; }
 .unexpected-expense-fields label { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 5px; color: var(--muted); font-size: .82rem; }
 .unexpected-expense-fields input { display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; height: 43px; padding: 0 10px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; outline: 0; color: var(--ink); background: rgba(7,16,22,.42); font-size: .9rem; }
-.unexpected-expense-fields input[type="date"] { display: flex; align-items: center; min-height: 43px; padding: 0 6px; color-scheme: dark; font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
-.unexpected-expense-fields input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
-.unexpected-expense-fields input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
+.unexpected-expense-fields .date-input-with-icon > input[type="date"] { display: flex; align-items: center; min-height: 43px; padding: 0 6px 0 32px; color-scheme: dark; font: inherit; font-size: clamp(.88rem, 4vw, 1.05rem); appearance: none; -webkit-appearance: none; }
+.unexpected-expense-fields .date-input-with-icon > input[type="date"]::-webkit-date-and-time-value { min-width: 0; min-height: 1.2em; text-align: left; }
+.unexpected-expense-fields .date-input-with-icon > input[type="date"]::-webkit-calendar-picker-indicator { margin: 0; padding: 0; }
 .unexpected-expense-fields input:focus { border-color: var(--accent-color, #5ee6a8); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #5ee6a8) 16%, transparent); }
 .unexpected-amount-input { display: flex; height: 43px; align-items: center; padding-left: 10px; border: 2px solid rgba(224,238,234,.3); border-radius: 12px; color: var(--muted); background: rgba(7,16,22,.42); font-size: .9rem; }
 .unexpected-amount-input:focus-within { border-color: var(--accent-color, #5ee6a8); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #5ee6a8) 16%, transparent); }

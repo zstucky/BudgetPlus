@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { addUnexpectedExpense } from "./actions";
+import CalendarIcon from "../calendar-icon";
 
 export default function UnexpectedExpenseForm({ today }: { today: string }) {
   const [amount, setAmount] = useState("");
@@ -43,7 +44,7 @@ export default function UnexpectedExpenseForm({ today }: { today: string }) {
         </label>
         <label>
           <span>Date</span>
-          <input required type="date" value={expenseDate} onChange={(event) => setExpenseDate(event.target.value)} />
+          <div className="date-input-with-icon"><CalendarIcon /><input required type="date" value={expenseDate} onChange={(event) => setExpenseDate(event.target.value)} /></div>
         </label>
         <label className="unexpected-description-field">
           <span>Description</span>

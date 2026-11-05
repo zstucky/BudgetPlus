@@ -2,6 +2,7 @@
 
 import { SubmitEvent, useState, CSSProperties } from "react";
 import Link from "next/link";
+import CalendarIcon from "./calendar-icon";
 import { addTransaction, resetTransactions, deleteTransaction, type WeeklyHistory } from "@/app/transactions/actions";
 import BottomNav from "./bottom-nav";
 
@@ -224,10 +225,7 @@ return (
             />
           </div>
           <div className="amount-input weekly-date-input">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
-              <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" />
-            </svg>
+            <CalendarIcon />
             <input id="transaction-date" aria-label="Transaction date" type="date" required value={transactionDate} onChange={(event) => setTransactionDate(event.target.value)} />
           </div>
         </div>

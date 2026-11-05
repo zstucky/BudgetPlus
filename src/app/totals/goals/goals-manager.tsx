@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
 import { deleteGoal, saveGoal, type Goal } from "../actions";
+import CalendarIcon from "../../calendar-icon";
 
 function money(amount: number) { return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount); }
 
@@ -64,7 +65,7 @@ export default function GoalsManager({ initialGoals, today, startAmount }: { ini
       <div className="monthly-list-heading"><h2 id="goal-form-title">{editing ? "Edit goal" : "Add a goal"}</h2></div>
       <form className="totals-form" onSubmit={submit} onChange={() => setSavedMessage(null)}>
         <label htmlFor="goal-name">Goal name</label><input id="goal-name" name="goal-name" required maxLength={80} placeholder="Pay off credit card" key={editing?.id ?? "new-name"} defaultValue={editing?.name ?? ""} />
-        <div className="totals-form-grid"><div><label htmlFor="target-amount">Target amount</label><div className="monthly-amount-input"><span>$</span><input id="target-amount" name="target-amount" required type="number" min="0.01" max="9999999999.99" step="0.01" placeholder="10000.00" key={editing?.id ?? "new-amount"} defaultValue={editing?.target_amount ?? ""} /></div></div><div><label htmlFor="target-date">Target date</label><input id="target-date" name="target-date" required type="date" min={editing ? editMinTargetDate : minTargetDate} key={editing?.id ?? "new-date"} defaultValue={editing?.target_date ?? minTargetDate} /></div></div>
+        <div className="totals-form-grid"><div><label htmlFor="target-amount">Target amount</label><div className="monthly-amount-input"><span>$</span><input id="target-amount" name="target-amount" required type="number" min="0.01" max="9999999999.99" step="0.01" placeholder="10000.00" key={editing?.id ?? "new-amount"} defaultValue={editing?.target_amount ?? ""} /></div></div><div><label htmlFor="target-date">Target date</label><div className="date-input-with-icon"><CalendarIcon /><input id="target-date" name="target-date" required type="date" min={editing ? editMinTargetDate : minTargetDate} key={editing?.id ?? "new-date"} defaultValue={editing?.target_date ?? minTargetDate} /></div></div></div>
         <label htmlFor="goal-color">Line color</label><div className="totals-goal-color"><input id="goal-color" name="goal-color" type="color" defaultValue={editing?.color ?? "#22C55E"} key={editing?.id ?? "new-color"} /><span>{editing ? "Update the color shown on your chart." : "Your goal line will appear in this color."}</span></div>
         <div className={`totals-goal-form-actions${editing ? " totals-goal-form-actions-editing" : ""}`}>
           <button type="submit" className="totals-primary-button" disabled={saving}>{saving ? "Saving…" : editing ? "Save changes" : "Add goal"}</button>

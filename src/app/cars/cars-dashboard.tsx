@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { addMaintenance, addVehicle, type Maintenance, type Vehicle } from "./actions";
+import CalendarIcon from "../calendar-icon";
 
 function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
@@ -89,7 +90,7 @@ export default function CarsDashboard({ initialVehicles, initialMaintenance }: {
                 <label htmlFor={`service-description-${vehicle.id}`}>Description</label>
                 <input id={`service-description-${vehicle.id}`} name="description" required maxLength={160} placeholder="Oil change, new tires…" />
                 <div className="cars-entry-grid cars-service-fields">
-                  <div><label htmlFor={`service-date-${vehicle.id}`}>Date</label><input id={`service-date-${vehicle.id}`} name="service-date" type="date" required value={maintenanceDate} onChange={(event) => setMaintenanceDate(event.target.value)} /></div>
+                  <div><label htmlFor={`service-date-${vehicle.id}`}>Date</label><div className="date-input-with-icon"><CalendarIcon /><input id={`service-date-${vehicle.id}`} name="service-date" type="date" required value={maintenanceDate} onChange={(event) => setMaintenanceDate(event.target.value)} /></div></div>
                   <div><label htmlFor={`service-cost-${vehicle.id}`}>Cost</label><div className="cars-cost-input"><span aria-hidden="true">$</span><input id={`service-cost-${vehicle.id}`} name="cost" type="number" min="0" max="99999999.99" step="0.01" placeholder="0.00" /></div></div>
                   <div><label htmlFor={`service-mileage-${vehicle.id}`}>Mileage</label><input id={`service-mileage-${vehicle.id}`} name="mileage" required type="number" min="0" max="2147483647" step="1" placeholder="Miles" /></div>
                 </div>

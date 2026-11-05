@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import CalendarIcon from "../calendar-icon";
 import { addLesson, deleteLesson } from "./actions";
 
 export type Lesson = { id: string; amount: number; lesson_date: string; description: string; type: "income" | "expense" };
@@ -132,7 +133,7 @@ export default function LessonsDashboard({
           </div>
           <div>
             <label htmlFor="lesson-date">Date</label>
-            <input id="lesson-date" type="date" required value={lessonDate} onChange={(event) => setLessonDate(event.target.value)} />
+            <div className="date-input-with-icon"><CalendarIcon /><input id="lesson-date" type="date" required value={lessonDate} onChange={(event) => setLessonDate(event.target.value)} /></div>
           </div>
           <div className="lessons-description-field">
             <label htmlFor="lesson-description">Description</label>
