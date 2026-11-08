@@ -13,6 +13,7 @@ export default async function TotalsPage() {
   if (!membership.householdId) redirect("/setup-household");
 
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const [accountsResult, snapshotsResult, outreachIncomeResult, outreachSpendsResult, householdResult, billsResult, goalsResult] = await Promise.all([
     supabase.from("accounts").select("id, name, balance, balance_type").eq("household_id", membership.householdId).order("created_at", { ascending: true }),
     supabase.from("total_snapshots").select("id, total, created_at").eq("household_id", membership.householdId).order("created_at", { ascending: false }).limit(15),
@@ -53,6 +54,7 @@ export default async function TotalsPage() {
         monthlyProjection={monthlyProjection}
         forecastStartDate={new Date().toISOString()}
         today={centralDateKey()}
+        showPrediction={user?.user_metadata?.show_totals_prediction !== false}
       />
     </main>
   );

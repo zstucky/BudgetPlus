@@ -3,10 +3,26 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
+import { revalidatePath } from "next/cache";
 
 export type HouseholdFormState = {
   error?: string;
 };
+
+export async function setTotalsPredictionPreference(showPrediction: boolean) {
+  if (typeof showPrediction !== "boolean") return { error: "Invalid preference." };
+  const supabase = await createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) return { error: "You must be logged in." };
+
+  const { error } = await supabase.auth.updateUser({
+    data: { ...user.user_metadata, show_totals_prediction: showPrediction },
+  });
+  if (error) return { error: `Unable to save preference: ${error.message}` };
+  revalidatePath("/totals");
+  revalidatePath("/household");
+  return { error: null };
+}
 
 export async function updateHousehold(
   _: HouseholdFormState,

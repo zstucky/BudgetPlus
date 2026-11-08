@@ -37,7 +37,7 @@ function getXPosition(value: string, fallback: number, startTime: number, timeSp
   return 8 + Math.min(1, Math.max(0, elapsed)) * 84;
 }
 
-export default function TotalsDashboard({ initialAccounts, initialSnapshots, initialGoals, outreachLiability, monthlyProjection, forecastStartDate, today }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; initialGoals: Goal[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string; today: string }) {
+export default function TotalsDashboard({ initialAccounts, initialSnapshots, initialGoals, outreachLiability, monthlyProjection, forecastStartDate, today, showPrediction }: { initialAccounts: Account[]; initialSnapshots: TotalSnapshot[]; initialGoals: Goal[]; outreachLiability: number; monthlyProjection: number | null; forecastStartDate: string; today: string; showPrediction: boolean }) {
   const [accounts, setAccounts] = useState(initialAccounts);
   const [snapshots, setSnapshots] = useState(initialSnapshots);
   const goals = initialGoals;
@@ -55,7 +55,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, ini
   const displayAccounts = [...accounts, outreachAccount];
   const total = useMemo(() => accounts.reduce((sum, account) => sum + account.balance * (account.balance_type === "liability" ? -1 : 1), 0) - outreachLiability, [accounts, outreachLiability]);
   const forecastPoints = useMemo(() => {
-    if (monthlyProjection === null) return [];
+    if (monthlyProjection === null || !showPrediction) return [];
     const oldestVisibleSnapshot = snapshots[0];
     const start = new Date(oldestVisibleSnapshot?.created_at ?? forecastStartDate);
     const startingTotal = oldestVisibleSnapshot?.total ?? total;
@@ -64,7 +64,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, ini
       total: startingTotal + monthlyProjection * index,
       created_at: addMonthsClamped(start, index).toISOString(),
     }));
-  }, [monthlyProjection, forecastStartDate, snapshots, total]);
+  }, [monthlyProjection, forecastStartDate, snapshots, total, showPrediction]);
   const chartRange = useMemo(() => getChartRange([
     ...snapshots.map((point) => point.total),
     ...forecastPoints.map((point) => point.total),
@@ -173,7 +173,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, ini
       <header className="monthly-heading"><h1 id="totals-title">Totals</h1></header>
       <section className="monthly-calendar totals-chart-card" aria-labelledby="net-worth-title">
         <div className="calendar-heading"><div><p className="totals-kicker">Your net worth</p><h2 id="net-worth-title">{money(total)}</h2></div><div className="totals-chart-links"><Link href="/totals/goals" className="totals-chart-label">Goals</Link><Link href="/totals/history" className="totals-chart-label">History</Link></div></div>
-        {forecastChartPoints.length > 0 && <div className="totals-chart-legend" aria-hidden="true"><span><i className="totals-chart-history-key" />History</span><span><i className="totals-chart-forecast-key" />Prediction</span></div>}
+        {(chartPoints.length > 0 || forecastChartPoints.length > 0) && <div className="totals-chart-legend" aria-hidden="true">{chartPoints.length > 0 && <span><i className="totals-chart-history-key" />History</span>}{forecastChartPoints.length > 0 && <span><i className="totals-chart-forecast-key" />Prediction</span>}</div>}
         <div className="totals-chart" role="group" aria-label={chartHasPoints ? "Net worth history and prediction chart. Select a point to see its date and amount." : "No saved balance history yet"}>
           {chartHasPoints && chartRange ? <><div className="totals-chart-y-axis" aria-hidden="true"><span>{money(chartRange.max)}</span><span>{money((chartRange.max + chartRange.min) / 2)}</span><span>{money(chartRange.min)}</span></div><div className="totals-chart-plot"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="5" y1="16" x2="95" y2="16" className="totals-chart-axis"/><line x1="5" y1="52" x2="95" y2="52" className="totals-chart-axis"/><line x1="5" y1="88" x2="95" y2="88" className="totals-chart-axis"/>{goalChartLines.map((goal) => <g key={goal.id}><polyline points={goal.points} className="totals-chart-goal-line" style={{ stroke: goal.color }} /><circle cx={goal.x} cy={goal.y} r="1.8" className="totals-chart-goal-dot" style={{ fill: goal.color }} /></g>)}{chartPoints.length > 0 && <><polyline points={line} className="totals-chart-line"/>{chartPoints.map((point, index) => <g key={point.id ?? index}><circle cx={point.x} cy={point.y} r="1.7" className="totals-chart-dot"/><circle cx={point.x} cy={point.y} r="5" className="totals-chart-hit-target" role="button" tabIndex={0} aria-label={`History, ${new Date(point.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}, ${money(point.total)}`} onClick={() => setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y })} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedChartPoint({ id: point.id ?? String(index), created_at: point.created_at, total: point.total, x: point.x, y: point.y }); } }}/></g>)}</>}{forecastChartPoints.length > 0 && <><polyline points={forecastLine} className="totals-chart-forecast-line"/><g pointerEvents="none" aria-hidden="true">{forecastChartPoints.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.4" className="totals-chart-forecast-dot"/>)}</g></>}</svg>{selectedChartPoint && <div className="totals-chart-selection" role="status" aria-live="polite" style={{ left: `${selectedChartPoint.x}%`, top: `${selectedChartPoint.y}%`, transform: `translate(${selectedChartPoint.x < 25 ? "0" : selectedChartPoint.x > 75 ? "-100%" : "-50%"}, ${selectedChartPoint.y < 35 ? "12px" : "calc(-100% - 12px)"})` }}><strong>{new Date(selectedChartPoint.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</strong><strong>{money(selectedChartPoint.total)}</strong><button type="button" onClick={() => setSelectedChartPoint(null)} aria-label="Close chart point details">×</button></div>}</div></> : <p>Record your first total to start tracking your progress.</p>}
         </div>

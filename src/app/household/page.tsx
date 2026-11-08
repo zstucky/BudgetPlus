@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "../bottom-nav";
 import HouseholdForm from "./household-form";
+import PredictionSetting from "./prediction-setting";
 
 export default async function HouseholdPage() {
   const membership = await getCurrentMembership();
@@ -30,6 +31,7 @@ export default async function HouseholdPage() {
   }
 
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { data: household, error: householdError } = await supabase
     .from("households")
@@ -74,6 +76,7 @@ export default async function HouseholdPage() {
         </section>
         <section className="monthly-bills settings-section-card settings-user-card" aria-labelledby="user-settings-title">
           <div className="monthly-list-heading settings-section-heading"><h2 id="user-settings-title">User Settings</h2></div>
+          <PredictionSetting initialEnabled={user?.user_metadata?.show_totals_prediction !== false} />
           <button type="button" className="settings-menu-item settings-placeholder-button" disabled>
             <span className="settings-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>
             <span className="bill-details"><strong>Enable Notifications</strong><span>Push notifications are coming soon</span></span>
