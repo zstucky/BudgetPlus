@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "../bottom-nav";
 import LessonsDashboard, { type Lesson, type LessonMonth } from "./lessons-dashboard";
+import { centralDateKey } from "@/lib/dates";
 
 function dateKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -64,7 +65,7 @@ export default async function LessonsPage() {
       <LessonsDashboard
         initialLessons={lessons.filter((lesson) => lesson.lesson_date.startsWith(currentMonthKey))}
         initialMonths={months}
-        currentDate={dateKey(now)}
+        currentDate={centralDateKey(now)}
         currentMonthLabel={monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
       />
     </main>

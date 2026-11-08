@@ -4,6 +4,7 @@ import { getCurrentMembership } from "@/lib/households";
 import BottomNav from "@/app/bottom-nav";
 import GoalsManager from "./goals-manager";
 import type { Goal } from "../actions";
+import { centralDateKey } from "@/lib/dates";
 
 export default async function GoalsPage() {
   const membership = await getCurrentMembership();
@@ -24,5 +25,5 @@ export default async function GoalsPage() {
   const startAmount = (accountsResult.data ?? []).reduce((sum, account) => sum + Number(account.balance) * (account.balance_type === "liability" ? -1 : 1), 0)
     - Math.max(0, (incomeResult.data ?? []).reduce((sum, row) => sum + Number(row.amount), 0) - (spendsResult.data ?? []).reduce((sum, row) => sum + Number(row.amount), 0));
 
-  return <main className="monthly-page"><BottomNav /><GoalsManager initialGoals={goals} today={new Date().toISOString().slice(0, 10)} startAmount={startAmount} /></main>;
+  return <main className="monthly-page"><BottomNav /><GoalsManager initialGoals={goals} today={centralDateKey()} startAmount={startAmount} /></main>;
 }
