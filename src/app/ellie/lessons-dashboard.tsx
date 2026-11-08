@@ -123,8 +123,8 @@ export default function LessonsDashboard({
       <form className="monthly-form lessons-form" onSubmit={handleSubmit}>
         <h2>Add New</h2>
         <div className="lessons-type-tabs" role="group" aria-label="Lesson entry type">
-          <button type="button" aria-pressed={recordType === "income"} className={recordType === "income" ? "active" : ""} onClick={() => setRecordType("income")}>Income</button>
-          <button type="button" aria-pressed={recordType === "expense"} className={recordType === "expense" ? "active" : ""} onClick={() => setRecordType("expense")}>Expense</button>
+          <button type="button" aria-pressed={recordType === "income"} className={recordType === "income" ? "active active-income" : ""} onClick={() => setRecordType("income")}>Income</button>
+          <button type="button" aria-pressed={recordType === "expense"} className={recordType === "expense" ? "active active-expense" : ""} onClick={() => setRecordType("expense")}>Expense</button>
         </div>
         <div className="lessons-form-fields">
           <div>
@@ -146,7 +146,11 @@ export default function LessonsDashboard({
 
       <section className="monthly-bills lessons-list" aria-labelledby="lesson-list-title">
         <div className="monthly-list-heading"><h2 id="lesson-list-title">{currentMonthLabel}</h2><span>{lessons.length}</span></div>
-        <div className="monthly-total-row"><span>This month&apos;s lesson income</span><strong>{money(currentTotal)}</strong></div>
+        <div className="lessons-current-totals" aria-label="This month’s lesson totals">
+          <span>Income<strong>{money(currentTotal)}</strong></span>
+          <span>Expense<strong className="lessons-expense-amount">{money(currentExpenses)}</strong></span>
+          <span>Net<strong className={currentNet < 0 ? "lessons-expense-amount" : ""}>{money(currentNet)}</strong></span>
+        </div>
         {lessons.length === 0 ? <p className="monthly-empty">Lessons you add this month will appear here.</p> : (
           <ul>{lessons.map((lesson) => (
             <li key={lesson.id}>

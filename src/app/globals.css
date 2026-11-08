@@ -705,6 +705,10 @@ h1, h2, h3, button { text-transform: capitalize; }
 .lessons-history-totals > span { display: grid; gap: 3px; color: var(--muted); font-size: .67rem; }
 .lessons-history-totals strong { overflow: hidden; color: #a8f5cc; font-size: .82rem; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
 .lessons-history-totals .lessons-expense-amount { color: #ffaaa4; }
+.lessons-current-totals { display: flex; width: 100%; box-sizing: border-box; align-items: baseline; justify-content: space-between; gap: 6px; padding: 0 2px 13px; }
+.lessons-current-totals > span { display: inline-flex; align-items: baseline; gap: 4px; min-width: 0; color: var(--muted); font-size: .7rem; white-space: nowrap; }
+.lessons-current-totals strong { color: #a8f5cc; font-size: .72rem; font-variant-numeric: tabular-nums; }
+.lessons-current-totals .lessons-expense-amount { color: #ffaaa4; }
 .lessons-history-month li { grid-template-columns: minmax(0, 1fr) auto; }
 .lessons-chart-card { margin-bottom: 14px; }
 .lessons-chart-card .calendar-heading { padding-bottom: 12px; }
@@ -724,6 +728,8 @@ h1, h2, h3, button { text-transform: capitalize; }
 .lessons-type-tabs button { min-height: 35px; border: 1px solid transparent; border-radius: 9px; color: var(--muted); background: transparent; font-weight: 800; cursor: pointer; }
 .lessons-type-tabs button:hover { color: var(--ink); background: rgba(255,255,255,.05); }
 .lessons-type-tabs button.active { border-color: rgba(220,235,227,.24); color: #f3f7f5; background: rgba(220,235,227,.13); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+.lessons-type-tabs button.active-income { border-color: rgba(94,230,168,.52); color: #caffdf; background: rgba(47,171,113,.22); box-shadow: inset 0 1px rgba(168,245,204,.12), 0 0 14px rgba(94,230,168,.08); }
+.lessons-type-tabs button.active-expense { border-color: rgba(255,135,125,.5); color: #ffd0cc; background: rgba(196,66,59,.22); box-shadow: inset 0 1px rgba(255,170,164,.1), 0 0 14px rgba(255,98,87,.07); }
 .lessons-expense-amount { color: #ffaaa4; }
 .lessons-form-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .lessons-form-fields > div { display: grid; align-content: start; gap: 5px; min-width: 0; }
