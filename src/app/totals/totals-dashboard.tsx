@@ -13,15 +13,9 @@ function getChartRange(values: number[]) {
   if (!values.length) return null;
   const dataMin = Math.min(...values);
   const dataMax = Math.max(...values);
-  const rawStep = (dataMax - dataMin) / 2 || Math.max(Math.abs(dataMax) * 0.12, 1);
-  const magnitude = 10 ** Math.floor(Math.log10(rawStep));
-  const fraction = rawStep / magnitude;
-  const step = (fraction < 1.5 ? 1 : fraction < 3.5 ? 2 : fraction < 7.5 ? 5 : 10) * magnitude;
-  const lowerTick = Math.floor(dataMin / step);
-  let upperTick = Math.ceil(dataMax / step);
-  if (upperTick - lowerTick < 2) upperTick = lowerTick + 2;
-  if ((upperTick - lowerTick) % 2 !== 0) upperTick += 1;
-  return { min: lowerTick * step, max: upperTick * step };
+  const dataRange = dataMax - dataMin || Math.max(Math.abs(dataMax) * 0.12, 1);
+  const padding = dataRange * 0.08;
+  return { min: dataMin - padding, max: dataMax + padding };
 }
 
 function addMonthsClamped(date: Date, months: number) {
