@@ -110,7 +110,7 @@ export default function TotalsDashboard({ initialAccounts, initialSnapshots, ini
   function openAccount(account: Account) {
     setSelected(account);
     setConfirmDelete(false);
-    setAmount(account.balance.toFixed(2));
+    setAmount("");
     setError(null);
   }
 

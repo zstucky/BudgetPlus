@@ -755,6 +755,8 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-form label { margin-top: 3px; color: #dbe6e1; font-size: .83rem; font-weight: 700; }
 .totals-form > input, .totals-form > select, .totals-form-grid select, .totals-modal .totals-form > select { width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid rgba(224,238,234,.3); border-radius: 11px; outline: 0; color: var(--ink); background: rgba(7,16,22,.65); }
 .totals-form input:focus, .totals-form select:focus { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.totals-modal .monthly-amount-input:focus-within { border-color: rgba(94,230,168,.78); box-shadow: 0 0 0 3px rgba(94,230,168,.12); }
+.totals-modal .monthly-amount-input input:focus { border: 0; box-shadow: none; }
 .totals-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .totals-form-grid > div { display: grid; gap: 6px; min-width: 0; }
 .totals-form-grid select { appearance: none; }
@@ -774,6 +776,10 @@ h1, h2, h3, button { text-transform: capitalize; }
 .totals-modal .totals-form { padding: 0; border: 0; background: transparent; }
 .totals-update-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 5px; }
 .totals-update-actions .totals-primary-button { margin: 0; }
+.totals-update-actions .totals-primary-button { border-color: rgba(220,235,227,.28); color: var(--ink); background: rgba(255,255,255,.07); }
+.totals-update-actions .totals-primary-button:hover { border-color: rgba(220,235,227,.48); background: rgba(255,255,255,.11); }
+.totals-update-actions .totals-secondary-button { border-color: rgba(164,245,204,.58); color: #092015; background: linear-gradient(100deg, #a8f5cc, #5ee6a8); }
+.totals-update-actions .totals-secondary-button:hover { border-color: rgba(164,245,204,.78); background: linear-gradient(100deg, #b9f9d6, #70ecb3); }
 .totals-secondary-button { min-height: 45px; border: 1px solid rgba(220,235,227,.28); border-radius: 11px; color: var(--ink); background: rgba(255,255,255,.07); font-weight: 800; cursor: pointer; }
 .totals-secondary-button:hover { border-color: rgba(220,235,227,.48); background: rgba(255,255,255,.11); }
 .totals-secondary-button:disabled { cursor: wait; opacity: .65; }
